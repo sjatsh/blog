@@ -3,7 +3,7 @@ layout: post
 title: "使用Spring事务时遇到的Session问题"
 tag: "SpringBoot"
 date: "2016-08-05 00:00:00 +0800"
-categories: "java"
+categories: "技术"
 ---
 
 #### 问题  

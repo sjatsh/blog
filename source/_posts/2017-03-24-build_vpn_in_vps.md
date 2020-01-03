@@ -2,7 +2,7 @@
 layout: post
 title: "在搬瓦工VPS上搭建VPN服务"
 date: "2017-03-24 00:00:00 +0800"
-categories: "VPS"
+categories: "技术"
 tag: "VPS"
 ---
 

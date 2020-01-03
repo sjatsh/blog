@@ -2,7 +2,7 @@
 layout:     post
 title:      "B-Tree和B+Tree"
 date:       "2018-04-02 00:00:00 +0800"
-categories: "struct"
+categories: "技术"
 tag: "struct"
 ---
 

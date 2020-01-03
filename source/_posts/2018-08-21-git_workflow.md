@@ -3,7 +3,7 @@ layout: post
 title: "git workflow"
 date: "2018-08-21 17:30:00 +0800"
 tag: "git"
-categories: "vcs"
+categories: "技术"
 ---
 
 ### Git与SVN的比较

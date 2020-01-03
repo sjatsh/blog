@@ -3,7 +3,7 @@ layout: post
 title: "HTTP幂等性"
 tag: "http"
 date: "2018-07-16 00:00:00 +0800"
-categories: "net"
+categories: "技术"
 ---
 
 <a href="https://www.cnblogs.com/weidagang2046/archive/2011/06/04/idempotence.html" target="_blank">原文</a>

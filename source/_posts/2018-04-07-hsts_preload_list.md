@@ -3,7 +3,7 @@ layout: post
 title: "hsts preload"
 tag: "https"
 date: "2018-04-07 00:00:00 +0800"
-categories: "net"
+categories: "技术"
 ---
 
 ### 服务器https跳转的问题

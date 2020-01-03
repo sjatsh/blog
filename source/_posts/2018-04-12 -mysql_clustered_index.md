@@ -3,7 +3,7 @@ layout: post
 title: "mysql clustered index"
 tag: "mysql"
 date: "2018-04-12 00:00:00 +0800"
-categories: "db"
+categories: "技术"
 ---
 
 ### mysql聚集索引的理解 

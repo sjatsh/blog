@@ -3,7 +3,7 @@ layout: post
 title: "Go源码阅读-私有库拉取问题"
 date: "2019-10-29 14:24:30 +0800"
 tag: "golang"
-categories: "golang"
+categories: "技术"
 ---
 
 ## go get拉取私有库报错 ##

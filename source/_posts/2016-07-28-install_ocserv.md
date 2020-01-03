@@ -1,8 +1,9 @@
 ---
+layout: post
 title: "vps安装ocserv"
 tag: "vpn"
 date: "2016-07-28 00:00:00 +0800"
-categories: "net"
+categories: "技术"
 ---
 
 

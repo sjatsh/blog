@@ -2,7 +2,7 @@
 title: "Hexo新建Markdown自动打开编辑器"
 tag: "hexo"
 date: "2016-07-28 00:00:00 +0800"
-categories: "blog"
+categories: "技术"
 ---
 
 #### 添加js脚本

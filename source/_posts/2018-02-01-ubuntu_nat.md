@@ -3,7 +3,7 @@ layout: post
 title: "ubuntu nat"
 tag: "ubuntu"
 date: "2018-02-01 00:00:00 +0800"
-categories: "net"
+categories: "技术"
 ---
 
 ### 场景  

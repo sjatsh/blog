@@ -3,7 +3,7 @@ layout: post
 title: "go平滑重启选型和项目实践"
 date: "2019-09-17 21:38:00 +0800"
 tag: "golang"
-categories: "golang"
+categories: "技术"
 ---
 
 ## 什么是平滑重启

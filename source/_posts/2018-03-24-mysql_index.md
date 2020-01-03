@@ -3,7 +3,7 @@ layout: post
 title: "mysql index"
 tag: "mysql"
 date: "2018-03-24 00:00:00 +0800"
-categories: "db"
+categories: "技术"
 ---
 
 ### 什么是数据库索引（Mysql）

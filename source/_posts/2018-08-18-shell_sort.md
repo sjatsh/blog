@@ -3,7 +3,7 @@ layout: post
 title: "突破算法之-希尔排序"
 tag: "sort"
 date: "2018-08-18 20:24:00 +0800"
-categories: "algorithms"
+categories: "技术"
 ---
 
 ### 算法要点

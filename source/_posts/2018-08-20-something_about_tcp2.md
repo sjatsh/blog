@@ -4,7 +4,7 @@ title: "关于TCP那些事（二）"
 description: ""
 tag: "tcp"
 date: "2018-08-20 1:20:00 +0800"
-categories: "net"
+categories: "技术"
 ---
 
 ### TCP重传机制

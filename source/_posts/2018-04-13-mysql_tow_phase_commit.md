@@ -3,7 +3,7 @@ layout: post
 title: "mysql bin/redo log顺序一致性问题"
 tag: "mysql"
 date: "2018-04-13 00:00:00 +0800"
-categories: "db"
+categories: "技术"
 ---
 
 ### 为什么mysql既有bin log也有redo log

@@ -2,7 +2,7 @@
 layout: post
 title: "openpgp签名与验签"
 date: "2018-01-23 00:00:00 +0800"
-categories: "algorithms"
+categories: "技术"
 tag: "algorithms"
 ---
 

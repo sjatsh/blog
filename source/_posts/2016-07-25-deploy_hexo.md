@@ -2,7 +2,7 @@
 layout: post
 title: "Hexo配置Git一键部署"
 date: "2016-07-25 00:00:00 +0800"
-categories: "vps"
+categories: "技术"
 tag: "vps"
 ---
 

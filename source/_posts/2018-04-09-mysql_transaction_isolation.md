@@ -3,7 +3,7 @@ layout: post
 title: "mysql transaction isolation"
 date: "2018-04-09 00:00:00 +0800"
 tag: "mysql"
-categories: "db"
+categories: "技术"
 ---
 
 ###何为隔离级别

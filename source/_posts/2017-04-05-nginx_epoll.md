@@ -3,7 +3,7 @@ layout: post
 title: "Nginx epoll事件驱动"
 tag: "nginx"
 date: "2017-04-05 00:00:00 +0800"
-categories: "io"
+categories: "技术"
 ---
 
 ###Linux IO模式

@@ -2,7 +2,7 @@
 layout: post
 title: "CloudXNS DDNS"
 date: "2018-03-18 00:00:00 +0800"
-categories: "dns"
+categories: "技术"
 tag: "dns"
 ---
 

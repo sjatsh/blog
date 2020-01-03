@@ -2,8 +2,8 @@
 layout: post
 title: "lua脚本解析webhooks实现自动部署"
 date: "2017-02-27 00:00:00 +0800"
-categories: "vps"
 tag: "vps"
+categories: "技术"
 ---
 
 ### 码云配置webhooks

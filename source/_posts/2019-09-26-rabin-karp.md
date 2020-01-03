@@ -3,7 +3,7 @@ layout: post
 title: "Rabin-Karp在golang中的实现"
 date: "2019-09-26 12:01:30 +0800"
 tag: "golang"
-categories: "golang"
+categories: "技术"
 ---
 
 ### 简介

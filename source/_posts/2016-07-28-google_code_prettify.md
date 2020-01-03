@@ -1,8 +1,9 @@
 ---
+layout: post
 title: "替换Hexo代码段样式为google code prettify"
-tags: "hexo"
+tag: "hexo"
 date: "2016-07-28 00:00:00 +0800"
-categories: "vps"
+categories: "技术"
 ---
 
 #### 下载google code prettify  

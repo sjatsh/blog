@@ -3,7 +3,7 @@ layout: post
 title: "mysql InnoDB locks"
 tag: "mysql"
 date: "2018-04-11 00:00:00 +0800"
-categories: "db"
+categories: "技术"
 ---
 
 ###InnoDB的锁机制

@@ -3,7 +3,7 @@ layout: post
 title: "nginx lua预编译"
 tag: "nginx"
 date: "2017-04-05 00:00:00 +0800"
-categories: "blog"
+categories: "技术"
 ---
 
 #### 前景提要  

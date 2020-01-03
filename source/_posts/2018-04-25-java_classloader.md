@@ -3,7 +3,7 @@ layout: post
 title: "Java类加载器"
 tag: "classloader"
 date: "2018-04-25 00:00:00 +0800"
-categories: "java"
+categories: "技术"
 ---  
 
 ### 基本概念

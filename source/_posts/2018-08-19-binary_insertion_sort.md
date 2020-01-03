@@ -2,7 +2,7 @@
 layout:  post
 title:   "突破算法之-二分插入排序"
 date:    "2018-08-19 00:00:00 +0800"
-categories: "algorithms"
+categories: "技术"
 ---
 
 ### 二分插入排序原理

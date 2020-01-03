@@ -3,7 +3,7 @@ layout: post
 title: "常见web服务攻击和防御手段"
 date: "2019-11-04 16:50:00 +0800"
 tag: "web"
-categories: "network-security"
+categories: "技术"
 ---
 
 # 常见web服务攻击和防御手段

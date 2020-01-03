@@ -3,7 +3,7 @@ layout: post
 title: "值传递和引用传递"
 tag: "transmit"
 date: "2018-04-03 00:00:00 +0800"
-categories: "java"
+categories: "技术"
 ---
 
 ### 到底什么是值传递和引用传递  

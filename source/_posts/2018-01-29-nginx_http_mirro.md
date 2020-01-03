@@ -3,6 +3,7 @@ Layout: post
 title: "nginx request copy"
 tag: "nginx"
 date: "2018-01-29 00:00:00 +0800"
+categories: "技术"
 ---
 
 ### 问题

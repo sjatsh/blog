@@ -2,7 +2,7 @@
 layout: post
 title: "gateway framework"
 date: "2018-04-07 00:00:00 +0800"
-categories: "framework"
+categories: "技术"
 ---
 
 ### gateway framework

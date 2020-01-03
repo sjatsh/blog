@@ -3,7 +3,7 @@ layout: post
 title: "let's encrypt"
 tag: "certificate"
 date: "2018-03-18 00:00:00 +0800"
-categories: "vps"
+categories: "技术"
 ---
 
 ### 获取let's encrypt免费泛域名证书

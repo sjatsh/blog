@@ -2,7 +2,7 @@
 layout: post
 title: "突破算法之-冒泡排序"
 date: "2018-08-17 13:30:00 +0800"
-categories: "algorithms"
+categories: "技术"
 ---
 
 ### 冒泡排序原理

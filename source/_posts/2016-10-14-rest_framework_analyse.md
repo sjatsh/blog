@@ -3,7 +3,7 @@ layout: post
 title: "公司Rest架构启动过程分析"
 tag: "rest"
 date: "2016-10-14 00:00:00 +0800"
-categories: "framework"
+categories: "技术"
 ---
 
 #### 什么是REST

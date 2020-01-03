@@ -1,7 +1,8 @@
 ---
+layout: post
 title: "突破算法之-排列组合"
 description: ""
-tags: "permutation"
+tag: "permutation"
 date: "2018-08-19 2:00:00 +0800"
 categories: "algorithms"
 ---

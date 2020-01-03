@@ -1,7 +1,8 @@
 ---
+layout: post
 title: "Java类加载器"
 description: "Java类加载器"
-tags: "classloader"
+tag: "classloader"
 date: "2018-04-25 00:00:00 +0800"
 categories: "java"
 ---  

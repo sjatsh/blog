@@ -1,6 +1,7 @@
 ---
+layout: post
 title: "Nginx epoll事件驱动"
-tags: "nginx"
+tag: "nginx"
 date: "2017-04-05 00:00:00 +0800"
 categories: "io"
 ---

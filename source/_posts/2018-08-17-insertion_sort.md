@@ -1,7 +1,8 @@
 ---
+layout: post
 title: "突破算法之-直接插入排序"
 description: ""
-tags: "algorithms"
+tag: "algorithms"
 date: "2018-08-17 14:30:00 +0800"
 categories: "algorithms"
 ---

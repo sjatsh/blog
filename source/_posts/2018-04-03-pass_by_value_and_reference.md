@@ -1,8 +1,9 @@
 ---
+layout: post
 title: "值传递和引用传递"
 description: ""
-tags: "transmit"
-date: "2018-04-03"
+tag: "transmit"
+date: "2018-04-03 00:00:00 +0800"
 categories: "java"
 ---
 

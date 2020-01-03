@@ -1,8 +1,9 @@
 ---
+layout: post
 title: "开启Spring事务机制"
 description: ""
-tags: "transaction"
-date: "2016-08-04"
+tag: "transaction"
+date: "2016-08-04 00:00:00 +0800"
 categories: "SpringBoot"
 ---
 

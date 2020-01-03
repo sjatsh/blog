@@ -1,7 +1,8 @@
 ---
+layout: post
 title: "HTTP幂等性"
 description: "HTTP幂等性"
-tags: "http"
+tag: "http"
 date: "2018-07-16 00:00:00 +0800"
 categories: "net"
 ---

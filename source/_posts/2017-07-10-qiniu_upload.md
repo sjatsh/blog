@@ -1,8 +1,9 @@
 --
+layout: post
 title: "七牛文件上传"
 description: ""
-tags: "qiniu"
-date: "2017-07-10"
+tag: "qiniu"
+date: "2017-07-10 00:00:00 +0800"
 categories: "net"
 --
 

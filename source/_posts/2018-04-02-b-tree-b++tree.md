@@ -3,7 +3,7 @@ layout:     post
 title:      "B-Tree和B+Tree"
 date:       "2018-04-02 00:00:00 +0800"
 categories: "struct"
-tags: "struct"
+tag: "struct"
 ---
 
 大部分数据库系统及文件系统都采用B-Tree或其变种B+Tree作为索引结构，为什么B-Tree和B+Tree在被如此广泛用于索引？先从数据结构的角度来分析。

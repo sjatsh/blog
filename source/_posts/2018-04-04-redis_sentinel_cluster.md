@@ -1,7 +1,8 @@
 ---
+layout: post
 title: "redis sentinel/cluster"
 description: "redis sentinel/cluster"
-tags: "redis"
+tag: "redis"
 date: "2018-04-04"
 categories: "redis"
 ---

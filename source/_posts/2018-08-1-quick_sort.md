@@ -1,7 +1,8 @@
 ---
+layout: post
 title: "突破算法之-快速排序"
 description: ""
-tags: "sort"
+tag: "sort"
 date: "2018-08-19 1:30:00 +0800"
 categories: "algorithms"
 ---

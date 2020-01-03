@@ -1,7 +1,8 @@
 ---
+layout: post
 title: "关于TCP那些事（一）"
 description: ""
-tags: "tcp"
+tag: "tcp"
 date: "2018-08-19 23:20:00 +0800"
 categories: "net"
 ---

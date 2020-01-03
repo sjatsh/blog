@@ -1,7 +1,8 @@
 ---
+layout: post
 title: "突破算法之-选择排序"
 description: ""
-tags: "sort"
+tag: "sort"
 date: "2016-10-14 14:00:00 +0800"
 categories: "algorithms"
 ---

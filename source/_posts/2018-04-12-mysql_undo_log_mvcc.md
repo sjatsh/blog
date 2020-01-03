@@ -1,6 +1,6 @@
 ---
 title: "mysql undo log与MVCC的实现原理"
-tags: "mysql"
+tag: "mysql"
 date: "2018-04-12 00:00:00 +0800"
 categories: "db"
 ---

@@ -1,8 +1,9 @@
 ---
+layout: post
 title: "nginx lua预编译"
 description: ""
-tags: "nginx"
-date: "2017-04-05"
+tag: "nginx"
+date: "2017-04-05 00:00:00 +0800"
 categories: "blog"
 ---
 

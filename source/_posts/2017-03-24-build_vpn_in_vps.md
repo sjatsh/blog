@@ -3,7 +3,7 @@ layout: post
 title: "在搬瓦工VPS上搭建VPN服务"
 date: "2017-03-24 00:00:00 +0800"
 categories: "VPS"
-tags: "VPS"
+tag: "VPS"
 ---
 
 ### 搭建Shadowsocks服务

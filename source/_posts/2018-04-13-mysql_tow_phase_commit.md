@@ -1,7 +1,7 @@
 ---
 title: "mysql bin/redo log顺序一致性问题"
 description: ""
-tags: "mysql"
+tag: "mysql"
 date: "2018-04-13 00:00:00 +0800"
 categories: "db"
 ---

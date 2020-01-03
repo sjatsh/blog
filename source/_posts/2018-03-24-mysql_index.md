@@ -1,7 +1,8 @@
 ---
+layout: post
 title: "mysql index"
 description: "mysql索引"
-tags: "mysql"
+tag: "mysql"
 date: "2018-03-24 00:00:00 +0800"
 categories: "db"
 ---

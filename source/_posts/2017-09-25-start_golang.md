@@ -1,8 +1,9 @@
 ---
+layout: post
 title: "Go项目实战总结"
 description: ""
-tags: "golang"
-date: "2017-09-25"
+tag: "golang"
+date: "2017-09-25 00:00:00 +0800"
 categories: "golang"
 ---
 

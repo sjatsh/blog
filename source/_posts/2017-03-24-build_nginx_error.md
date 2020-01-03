@@ -3,7 +3,7 @@ layout: post
 title: "nginx-1.11.11模块编译报错解决"
 date: "2017-03-24 00:00:00 +0800"
 categories: "C"
-tags: "C"
+tag: "C"
 ---
 
 ####  Nginx最新版1.11.11编译报错

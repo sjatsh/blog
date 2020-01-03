@@ -1,7 +1,7 @@
 ---
 title: "Java 内存可见性与指令重排"
 description: "Java 内存可见性与指令重排"
-tags: "volatile"
+tag: "volatile"
 date: "2018-04-20 00:00:00 +0800"
 categories: "java"
 ---

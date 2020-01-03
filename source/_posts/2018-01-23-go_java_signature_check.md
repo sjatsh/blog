@@ -3,7 +3,7 @@ layout: post
 title: "openpgp签名与验签"
 date: "2018-01-23 00:00:00 +0800"
 categories: "algorithms"
-tags: "algorithms"
+tag: "algorithms"
 ---
 
 #### 存在的问题  

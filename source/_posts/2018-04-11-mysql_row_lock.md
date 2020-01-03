@@ -1,6 +1,7 @@
 ---
+layout: post
 title: "mysql InnoDB locks"
-tags: "mysql"
+tag: "mysql"
 date: "2018-04-11 00:00:00 +0800"
 categories: "db"
 ---

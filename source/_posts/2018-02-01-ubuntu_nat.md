@@ -1,7 +1,6 @@
 ---
 layout: post
 title: "ubuntu nat"
-description: ""
 tag: "ubuntu"
 date: "2018-02-01 00:00:00 +0800"
 categories: "net"

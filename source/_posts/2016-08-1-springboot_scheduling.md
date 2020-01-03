@@ -1,7 +1,6 @@
 ---
 layout: post
 title: "Spring Boot配置定时任务以及注册启动类"
-description: ""
 tag: "SpringBoot"
 date: "2016-08-14 00:00:00 +0800"
 categories: "java"

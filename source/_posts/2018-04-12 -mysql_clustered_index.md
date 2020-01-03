@@ -1,11 +1,10 @@
 ---
 layout: post
 title: "mysql clustered index"
-description: "mysql聚集索引"
 tag: "mysql"
 date: "2018-04-12 00:00:00 +0800"
 categories: "db"
---- 
+---
 
 ### mysql聚集索引的理解 
 

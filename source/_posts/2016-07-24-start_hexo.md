@@ -1,7 +1,6 @@
 ---
 layout: post
 title: "安装和配置Hexo"
-description: ""
 tag: "hexo"
 date: "2016-07-24 00:00:00 +0800"
 categories: "vps"

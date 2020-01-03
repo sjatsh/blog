@@ -1,7 +1,6 @@
 ---
 layout: post
 title: "通过账号密码查看Nginx日志"
-description: ""
 tag: "nginx"
 date: "2016-08-01 00:00:00 +0800"
 categories: "net"

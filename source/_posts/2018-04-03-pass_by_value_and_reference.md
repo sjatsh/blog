@@ -1,7 +1,6 @@
 ---
 layout: post
 title: "值传递和引用传递"
-description: ""
 tag: "transmit"
 date: "2018-04-03 00:00:00 +0800"
 categories: "java"

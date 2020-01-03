@@ -3,7 +3,7 @@ layout: post
 title: "redis sentinel/cluster"
 description: "redis sentinel/cluster"
 tag: "redis"
-date: "2018-04-04"
+date: "2018-04-04 00:00:00 +0800"
 categories: "redis"
 ---
 

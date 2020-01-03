@@ -1,4 +1,5 @@
 ---
+layout: post
 title: "mysql clustered index"
 description: "mysql聚集索引"
 tag: "mysql"

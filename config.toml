@@ -1,0 +1,48 @@
+baseURL = 'https://sjis.me/'
+languageCode = "zh-cn"
+title = "SunJun's blog"
+theme = "github-style"
+lastmod = true
+googleAnalytics = "UA-81346699-2"
+pygmentsCodeFences = true
+pygmentsUseClasses = true
+
+[params]
+  author = "SunJun"
+  description = "In solitude, where we are least alone."
+  github = "sjatsh"
+  #facebook = "MeiK2333"
+  #twitter = "MeiK2333"
+  #linkedin = "MeiK2333"
+  #instagram = "MeiK2333"
+  #tumblr = "MeiK2333"
+  email = "i@sjis.me"
+  url = "https://sjis.me"
+  keywords = "blog, google analytics"
+  rss = true
+  lastmod = true
+  userStatusEmoji = "😀"
+  favicon = "/images/github.png"
+  location = "China"
+  enableGitalk = false
+
+  [params.gitalk]
+    clientID = "Your client ID" 
+    clientSecret = "Your client secret" 
+    repo = "repo"
+    owner = "MeiK2333"
+    admin = "MeiK2333"
+    id = "location.pathname"
+    labels = "gitalk"
+    perPage = 15
+    pagerDirection = "last"
+    createIssueManually = true
+    distractionFreeMode = false
+
+  #[[params.links]]
+  #  title = "Github"
+  #  href = "https://github.com/sjatsh"
+
+[frontmatter]
+  lastmod = ["lastmod", ":fileModTime", ":default"]
+

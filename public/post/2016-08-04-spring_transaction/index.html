@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <script type="application/javascript" src='https://sjis.me/js/theme-mode.js'></script>
+    <link rel="stylesheet" href='https://sjis.me/css/frameworks.min.css' />
+    <link rel="stylesheet" href='https://sjis.me/css/github.min.css' />
+    <link rel="stylesheet" href='https://sjis.me/css/github-style.css' />
+    <link rel="stylesheet" href='https://sjis.me/css/light.css' />
+    <link rel="stylesheet" href='https://sjis.me/css/dark.css' />
+    <link rel="stylesheet" href='https://sjis.me/css/syntax.css' />
+    <title>开启Spring事务机制 - SunJun&#39;s blog</title>
+    
+    <link rel="icon" type="image/x-icon" href='/images/github.png'>
+    
+    <meta name="theme-color" content="#1e2327">
+
+    
+    <meta name="description"
+  content="什么是事务？ 在企业级开发过程中，对于与无人员来说一个实际的对数据库的操作可能是多步结合进行的。
+" />
+<meta name="keywords"
+  content='blog, google analytics' />
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="https://sjis.me/post/2016-08-04-spring_transaction/" />
+
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="开启Spring事务机制 - SunJun&#39;s blog" />
+<meta name="twitter:description"
+  content="什么是事务？ 在企业级开发过程中，对于与无人员来说一个实际的对数据库的操作可能是多步结合进行的。
+" />
+<meta name="twitter:site" content="https://sjis.me/" />
+<meta name="twitter:creator" content="" />
+<meta name="twitter:image"
+  content="https://sjis.me/">
+
+
+<meta property="og:type" content="article" />
+<meta property="og:title" content="开启Spring事务机制 - SunJun&#39;s blog">
+<meta property="og:description"
+  content="什么是事务？ 在企业级开发过程中，对于与无人员来说一个实际的对数据库的操作可能是多步结合进行的。
+" />
+<meta property="og:url" content="https://sjis.me/post/2016-08-04-spring_transaction/" />
+<meta property="og:site_name" content="开启Spring事务机制" />
+<meta property="og:image"
+  content="https://sjis.me/">
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+<meta property="article:published_time" content="2016-08-04 00:00:00 &#43;0800 CST" />
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body>
+  <div style="position: relative">
+  <header class="Header js-details-container Details px-3 px-md-4 px-lg-5 flex-wrap flex-md-nowrap open Details--on">
+    <div class="Header-item mobile-none" style="margin-top: -4px; margin-bottom: -4px;">
+      <a class="Header-link" href="https://sjis.me/">
+        <svg class="octicon" height="32" viewBox="0 0 16 16" version="1.1" width="32">
+          <path fill-rule="evenodd"
+            d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z">
+          </path>
+        </svg>
+      </a>
+    </div>
+    <div class="Header-item d-md-none">
+      <button class="Header-link btn-link js-details-target" type="button"
+        onclick="document.querySelector('#header-search').style.display = document.querySelector('#header-search').style.display == 'none'? 'block': 'none'">
+        <svg height="24" class="octicon octicon-three-bars" viewBox="0 0 16 16" version="1.1" width="24">
+          <path fill-rule="evenodd"
+            d="M1 2.75A.75.75 0 011.75 2h12.5a.75.75 0 110 1.5H1.75A.75.75 0 011 2.75zm0 5A.75.75 0 011.75 7h12.5a.75.75 0 110 1.5H1.75A.75.75 0 011 7.75zM1.75 12a.75.75 0 100 1.5h12.5a.75.75 0 100-1.5H1.75z">
+          </path>
+        </svg>
+      </button>
+    </div>
+    <div style="display: none;" id="header-search"
+      class="Header-item Header-item--full flex-column flex-md-row width-full flex-order-2 flex-md-order-none mr-0 mr-md-3 mt-3 mt-md-0 Details-content--hidden-not-important d-md-flex">
+      <div
+        class="Header-search header-search flex-auto js-site-search position-relative flex-self-stretch flex-md-self-auto mb-3 mb-md-0 mr-0 mr-md-3 scoped-search site-scoped-search js-jump-to">
+        <div class="position-relative">
+          <form target="_blank" action="https://www.google.com/search" accept-charset="UTF-8" method="get"
+            autocomplete="off">
+            <label
+              class="Header-search-label form-control input-sm header-search-wrapper p-0 js-chromeless-input-container header-search-wrapper-jump-to position-relative d-flex flex-justify-between flex-items-center">
+              <input type="text"
+                class="Header-search-input form-control input-sm header-search-input jump-to-field js-jump-to-field js-site-search-focus js-site-search-field is-clearable"
+                name="q" value="" placeholder="Search" autocomplete="off">
+              <input type="hidden" name="q" value="site:https://sjis.me/">
+            </label>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="Header-item Header-item--full flex-justify-center d-md-none position-relative">
+      <a class="Header-link " href="https://sjis.me/">
+        <svg class="octicon octicon-mark-github v-align-middle" height="32" viewBox="0 0 16 16" version="1.1"
+          width="32">
+          <path fill-rule="evenodd"
+            d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z">
+          </path>
+        </svg>
+      </a>
+    </div>
+    <div class="Header-item" style="margin-right: 0;">
+      <a href="javascript:void(0)" class="Header-link no-select" onclick="switchTheme()">
+        <svg style="fill: var(--color-profile-color-modes-toggle-moon);" class="no-select" viewBox="0 0 16 16"
+          version="1.1" width="16" height="16">
+          <path fill-rule="evenodd" clip-rule="evenodd"
+            d="M4.52208 7.71754C7.5782 7.71754 10.0557 5.24006 10.0557 2.18394C10.0557 1.93498 10.0392 1.68986 10.0074 1.44961C9.95801 1.07727 10.3495 0.771159 10.6474 0.99992C12.1153 2.12716 13.0615 3.89999 13.0615 5.89383C13.0615 9.29958 10.3006 12.0605 6.89485 12.0605C3.95334 12.0605 1.49286 10.001 0.876728 7.24527C0.794841 6.87902 1.23668 6.65289 1.55321 6.85451C2.41106 7.40095 3.4296 7.71754 4.52208 7.71754Z">
+          </path>
+        </svg>
+      </a>
+    </div>
+  </header>
+</div>
+  
+<div>
+  <main>
+    <div class="gisthead pagehead bg-gray-light pb-0 pt-3 mb-4">
+      <div class="px-0">
+        <div class="mb-3 d-flex px-3 px-md-3 px-lg-5">
+          <div class="flex-auto min-width-0 width-fit mr-3">
+            <div class="d-flex">
+              <div class="d-none d-md-block">
+                <a class="avatar mr-2 flex-shrink-0" href="https://sjis.me/">
+                  <img class=" avatar-user"
+                    src="https://sjis.me/images/avatar.png"
+                    width="32" height="32"></a>
+              </div>
+              <div class="d-flex flex-column">
+                <h1 class="break-word f3 text-normal mb-md-0 mb-1">
+                  <span class="author">
+                    <a href="https://sjis.me/">SunJun</a></span><span
+                    class="path-divider">/</span><strong class="css-truncate-target mr-1" style="max-width: 410px"><a
+                      href="https://sjis.me/post/2016-08-04-spring_transaction/">开启Spring事务机制</a></strong>
+                </h1>
+                <div class="note m-0">
+                  Created <relative-time datetime="Thu, 04 Aug 2016 00:00:00 &#43;0800"
+                    class="no-wrap">
+                    Thu, 04 Aug 2016 00:00:00 &#43;0800</relative-time>
+
+                  
+                  <span class="file-info-divider"></span>
+                  Modified <relative-time datetime="Tue, 27 Sep 2022 13:46:48 &#43;0800"
+                    class="no-wrap">
+                    Tue, 27 Sep 2022 13:46:48 &#43;0800</relative-time>
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-lg px-3 new-discussion-timeline">
+      <div class="repository-content gist-content">
+        <div>
+          <div class="js-gist-file-update-container js-task-list-container file-box">
+            <div id="file-pytest" class="file my-2">
+              <div id="post-header" class="file-header d-flex flex-md-items-center flex-items-start sticky-header" style="z-index: 2">
+                <div class="file-info d-flex flex-md-items-center flex-items-start flex-order-1 flex-auto">
+                  <div class="text-mono f6 flex-auto pr-3 flex-order-2 flex-md-order-1 mt-2 mt-md-0">
+                    
+                    <summary id="toc-toggle" onclick="clickToc()" class="btn btn-octicon m-0 mr-2 p-2">
+                      <svg aria-hidden="true" viewBox="0 0 16 16" height="16" width="16" class="octicon octicon-list-unordered">
+                        <path fill-rule="evenodd" d="M2 4a1 1 0 100-2 1 1 0 000 2zm3.75-1.5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zm0 5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zm0 5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zM3 8a1 1 0 11-2 0 1 1 0 012 0zm-1 6a1 1 0 100-2 1 1 0 000 2z"></path>
+                      </svg>
+                    </summary>
+                    <details-menu class="SelectMenu" id="toc-details" style="display: none;">
+                      <div class="SelectMenu-modal rounded-3 mt-1" style="max-height: 340px;">
+                        <div class="SelectMenu-list SelectMenu-list--borderless p-2" style="overscroll-behavior: contain;" id="toc-list">
+                        </div>
+                      </div>
+                    </details-menu>
+                      2166 Words
+                    
+
+                  </div>
+                  <div class="file-actions flex-order-2 pt-0">
+                    
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="Box-body px-5 pb-5" style="z-index: 1">
+                <article class="markdown-body entry-content container-lg"><h4 id="什么是事务">什么是事务？</h4>
+<p>在企业级开发过程中，对于与无人员来说一个实际的对数据库的操作可能是多步结合进行的。</p>
+<p>由于对数据库的操作在任何一个步骤都有可能会发生异常，异常会导致后续操作无法完成，可是此时业务逻辑没有正确完成，之前的操作数据也就不可靠，需要在这种情况下对之前的操作的数据进行回滚。</p>
+<p>回滚是为了保证用户每一步的操作都是可靠的，事务中的每一步操作都必须正确完成，只要有一个异常的发生都需要回退到开始的未进行的状态。</p>
+<p>事务管理也是Spring框架中最为常用的功能之一。</p>
+<h4 id="快速入门">快速入门</h4>
+<p>在Spring Boot中，当我们使用了<code>spring-boot-starter-jdbc</code>或<code>spring-boot-starter-data-jpa</code>依赖的时候，框架会自动默认分别注入  <code>DataSourceTransactionManager</code>或<code>JpaTransactionManager</code>。所以我们不需要任何额外配置就可以用<code>@Transactional</code>注解进行事务的使用。</p>
+<p>通常在单元测试中，我们只是想要测试业务逻辑的正确与否，并不想保存测试数据。</p>
+<pre tabindex="0"><code>@RunWith(SpringJUnit4ClassRunner.class)
+@SpringApplicationConfiguration(Application.class)
+public class ApplicationTests {
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Test
+    public void test() throws Exception {
+
+        // 创建10条记录
+        userRepository.save(new User(&#34;AAA&#34;, 10));
+        userRepository.save(new User(&#34;BBB&#34;, 20));
+        userRepository.save(new User(&#34;CCC&#34;, 30));
+        userRepository.save(new User(&#34;DDD&#34;, 40));
+        userRepository.save(new User(&#34;EEE&#34;, 50));
+        userRepository.save(new User(&#34;FFF&#34;, 60));
+        userRepository.save(new User(&#34;GGG&#34;, 70));
+        userRepository.save(new User(&#34;HHH&#34;, 80));
+        userRepository.save(new User(&#34;III&#34;, 90));
+        userRepository.save(new User(&#34;JJJ&#34;, 100));
+
+        // 省略后续的一些验证操作
+    }
+
+
+}
+</code></pre><p>可以看到，在这个单元测试用例中，使用UserRepository对象连续创建了10个User实体到数据库中，下面我们人为的来制造一些异常，看看会发生什么情况。</p>
+<p>通过定义User的name属性长度为5，这样通过创建时User实体的name属性超长就可以触发异常产生。</p>
+<pre tabindex="0"><code>@Entity
+public class User {
+
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    @Column(nullable = false, length = 5)
+    private String name;
+
+    @Column(nullable = false)
+    private Integer age;
+
+    // 省略构造函数、getter和setter
+
+}
+</code></pre><p>修改测试用例中创建记录的语句，将一条记录的name长度超过5，如下：name为HHHHHHHHH的User对象将会抛出异常。</p>
+<pre tabindex="0"><code>// 创建10条记录
+userRepository.save(new User(&#34;AAA&#34;, 10));  
+userRepository.save(new User(&#34;BBB&#34;, 20));  
+userRepository.save(new User(&#34;CCC&#34;, 30));  
+userRepository.save(new User(&#34;DDD&#34;, 40));  
+userRepository.save(new User(&#34;EEE&#34;, 50));  
+userRepository.save(new User(&#34;FFF&#34;, 60));  
+userRepository.save(new User(&#34;GGG&#34;, 70));  
+userRepository.save(new User(&#34;HHHHHHHHHH&#34;, 80));  
+userRepository.save(new User(&#34;III&#34;, 90));  
+userRepository.save(new User(&#34;JJJ&#34;, 100));
+</code></pre><p>执行测试用例，可以看到控制台中抛出了如下异常，name字段超长：</p>
+<pre tabindex="0"><code>2016-05-27 10:30:35.948  WARN 2660 --- [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 1406, SQLState: 22001  
+2016-05-27 10:30:35.948 ERROR 2660 --- [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : Data truncation: Data too long for column &#39;name&#39; at row 1  
+2016-05-27 10:30:35.951  WARN 2660 --- [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Warning Code: 1406, SQLState: HY000  
+2016-05-27 10:30:35.951  WARN 2660 --- [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : Data too long for column &#39;name&#39; at row 1
+
+org.springframework.dao.DataIntegrityViolationException: could not execute statement; SQL [n/a]; nested exception is org.hibernate.exception.DataException: could not execute statement  
+</code></pre><p>此时查数据库中，创建了name从AAA到GGG的记录，没有HHHHHHHHHH、III、JJJ的记录。而若这是一个希望保证完整性操作的情况下，AAA到GGG的记录希望能在发生异常的时候被回退，这时候就可以使用事务让它实现回退，做法非常简单，我们只需要在test函数上添加<code>@Transactional</code>注解即可。</p>
+<pre tabindex="0"><code>@Test
+@Transactional
+public void test() throws Exception {
+
+    // 省略测试内容
+
+}
+</code></pre><h4 id="事务详解">事务详解</h4>
+<p>上面的例子中我们使用了默认的事务配置，可以满足一些基本的事务需求，但是当我们项目较大较复杂时（比如，有多个数据源等），这时候需要在声明事务时，指定不同的事务管理器。对于不同数据源的事务管理配置可以见《Spring Boot多数据源配置与使用》中的设置。在声明事务时，只需要通过value属性指定配置的事务管理器名即可，例如：@Transactional(value=&ldquo;transactionManagerPrimary&rdquo;)。</p>
+<p>除了指定不同的事务管理器之后，还能对事务进行隔离级别和传播行为的控制，下面分别详细解释：</p>
+<h5 id="隔离级别">隔离级别</h5>
+<p>隔离级别是指若干个并发的事务之间的隔离程度，与我们开发时候主要相关的场景包括：脏读取、重复读、幻读。</p>
+<p>我们可以看<code>org.springframework.transaction.annotation.Isolation</code>枚举类中定义了五个表示隔离级别的值：</p>
+<pre tabindex="0"><code>public enum Isolation {  
+    DEFAULT(-1),
+    READ_UNCOMMITTED(1),
+    READ_COMMITTED(2),
+    REPEATABLE_READ(4),
+    SERIALIZABLE(8);
+}
+</code></pre><ul>
+<li><code>DEFAULT</code>：这是默认值，表示使用底层数据库的默认隔离级别。对大部分数据库而言，通常这值就是：READ_COMMITTED。</li>
+<li><code>READ_UNCOMMITTED</code>：该隔离级别表示一个事务可以读取另一个事务修改但还没有提交的数据。该级别不能防止脏读和不可重复读，因此很少使用该隔离级别。</li>
+<li><code>READ_COMMITTED</code>：该隔离级别表示一个事务只能读取另一个事务已经提交的数据。该级别可以防止脏读，这也是大多数情况下的推荐值。</li>
+<li><code>REPEATABLE_READ</code>：该隔离级别表示一个事务在整个过程中可以多次重复执行某个查询，并且每次返回的记录都相同。即使在多次查询之间有新增的数据满足该查询，这些新增的记录也会被忽略。该级别可以防止脏读和不可重复读。</li>
+<li><code>SERIALIZABLE</code>：所有的事务依次逐个执行，这样事务之间就完全不可能产生干扰，也就是说，该级别可以防止脏读、不可重复读以及幻读。但是这将严重影响程序的性能。通常情况下也不会用到该级别。</li>
+</ul>
+<p>指定方法：通过使用<code>isolation</code>属性设置，例如：</p>
+<pre tabindex="0"><code>@Transactional(propagation = Propagation.REQUIRED)
+</code></pre><h4 id="实现回滚的三种方式">实现回滚的三种方式</h4>
+<h5 id="1直接抛出异常">1.直接抛出异常</h5>
+<p>发生异常时在catch中直接通过throw抛出异常，因为Spring事务默认接收到抛出异常时回滚，从<code>@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)</code>中的配置也可以看出。</p>
+<h5 id="2抛出runtimeexception">2.抛出RunTimeException</h5>
+<p>或者在catch中通过自己手动<code>throw new RunTimeException();</code>抛出异常。</p>
+<h5 id="3transactionaspectsupportcurrenttransactionstatussetrollbackonly">3.TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();</h5>
+<p>通过这种放发可以不需要抛出异常直接回滚。在前台需要返回异常信息时用这种方法就可以起到很好的作用。</p></article>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<script type="application/javascript" src='https://sjis.me/js/toc.js'></script>
+<link rel="stylesheet" href='https://sjis.me/css/toc.css' />
+
+
+  <div class="footer container-xl width-full p-responsive">
+  <div
+    class="position-relative d-flex flex-row-reverse flex-lg-row flex-wrap flex-lg-nowrap flex-justify-center flex-lg-justify-between flex-sm-items-center pt-6 pb-2 mt-6 f6 text-gray border-top border-gray-light ">
+    <a aria-label="Homepage" title="GitHub" class="footer-octicon d-none d-lg-block mr-lg-4" href="https://sjis.me/">
+      <svg height="24" class="octicon octicon-mark-github" viewBox="0 0 16 16" version="1.1" width="24">
+        <path fill-rule="evenodd"
+          d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z">
+        </path>
+      </svg>
+    </a>
+    <ul class="list-style-none d-flex flex-wrap col-12 flex-justify-center flex-lg-justify-between mb-2 mb-lg-0">
+      
+      <li class="mr-3 mr-lg-0">Theme by <a href='https://github.com/MeiK2333/github-style'>github-style</a></li>
+      
+    </ul>
+  </div>
+  <div class="d-flex flex-justify-center pb-6">
+    <span class="f6 text-gray-light"></span>
+  </div>
+
+
+</div>
+</body>
+
+<script type="application/javascript" src="https://sjis.me/js/github-style.js"></script>
+
+
+
+
+</html>

@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <script type="application/javascript" src='https://sjis.me/js/theme-mode.js'></script>
+    <link rel="stylesheet" href='https://sjis.me/css/frameworks.min.css' />
+    <link rel="stylesheet" href='https://sjis.me/css/github.min.css' />
+    <link rel="stylesheet" href='https://sjis.me/css/github-style.css' />
+    <link rel="stylesheet" href='https://sjis.me/css/light.css' />
+    <link rel="stylesheet" href='https://sjis.me/css/dark.css' />
+    <link rel="stylesheet" href='https://sjis.me/css/syntax.css' />
+    <title>七牛文件上传 - SunJun&#39;s blog</title>
+    
+    <link rel="icon" type="image/x-icon" href='/images/github.png'>
+    
+    <meta name="theme-color" content="#1e2327">
+
+    
+    <meta name="description"
+  content="基本的环境搭建 这里使用的是七牛的Java sdk，框架用的是spring boot，至于spring boot的基本框架搭建就不说了。 maven引入依赖
+&amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;com.qiniu&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;qiniu-java-sdk&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;[7.0.0, 7.2.99]&amp;lt;/version&amp;gt; &amp;lt;/dependency&amp;gt; " />
+<meta name="keywords"
+  content='blog, google analytics' />
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="https://sjis.me/post/2017-07-10-qiniu_upload/" />
+
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="七牛文件上传 - SunJun&#39;s blog" />
+<meta name="twitter:description"
+  content="基本的环境搭建 这里使用的是七牛的Java sdk，框架用的是spring boot，至于spring boot的基本框架搭建就不说了。 maven引入依赖
+&amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;com.qiniu&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;qiniu-java-sdk&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;[7.0.0, 7.2.99]&amp;lt;/version&amp;gt; &amp;lt;/dependency&amp;gt; " />
+<meta name="twitter:site" content="https://sjis.me/" />
+<meta name="twitter:creator" content="" />
+<meta name="twitter:image"
+  content="https://sjis.me/">
+
+
+<meta property="og:type" content="article" />
+<meta property="og:title" content="七牛文件上传 - SunJun&#39;s blog">
+<meta property="og:description"
+  content="基本的环境搭建 这里使用的是七牛的Java sdk，框架用的是spring boot，至于spring boot的基本框架搭建就不说了。 maven引入依赖
+&amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;com.qiniu&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;qiniu-java-sdk&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;[7.0.0, 7.2.99]&amp;lt;/version&amp;gt; &amp;lt;/dependency&amp;gt; " />
+<meta property="og:url" content="https://sjis.me/post/2017-07-10-qiniu_upload/" />
+<meta property="og:site_name" content="七牛文件上传" />
+<meta property="og:image"
+  content="https://sjis.me/">
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+<meta property="article:published_time" content="2017-07-10 00:00:00 &#43;0800 CST" />
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body>
+  <div style="position: relative">
+  <header class="Header js-details-container Details px-3 px-md-4 px-lg-5 flex-wrap flex-md-nowrap open Details--on">
+    <div class="Header-item mobile-none" style="margin-top: -4px; margin-bottom: -4px;">
+      <a class="Header-link" href="https://sjis.me/">
+        <svg class="octicon" height="32" viewBox="0 0 16 16" version="1.1" width="32">
+          <path fill-rule="evenodd"
+            d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z">
+          </path>
+        </svg>
+      </a>
+    </div>
+    <div class="Header-item d-md-none">
+      <button class="Header-link btn-link js-details-target" type="button"
+        onclick="document.querySelector('#header-search').style.display = document.querySelector('#header-search').style.display == 'none'? 'block': 'none'">
+        <svg height="24" class="octicon octicon-three-bars" viewBox="0 0 16 16" version="1.1" width="24">
+          <path fill-rule="evenodd"
+            d="M1 2.75A.75.75 0 011.75 2h12.5a.75.75 0 110 1.5H1.75A.75.75 0 011 2.75zm0 5A.75.75 0 011.75 7h12.5a.75.75 0 110 1.5H1.75A.75.75 0 011 7.75zM1.75 12a.75.75 0 100 1.5h12.5a.75.75 0 100-1.5H1.75z">
+          </path>
+        </svg>
+      </button>
+    </div>
+    <div style="display: none;" id="header-search"
+      class="Header-item Header-item--full flex-column flex-md-row width-full flex-order-2 flex-md-order-none mr-0 mr-md-3 mt-3 mt-md-0 Details-content--hidden-not-important d-md-flex">
+      <div
+        class="Header-search header-search flex-auto js-site-search position-relative flex-self-stretch flex-md-self-auto mb-3 mb-md-0 mr-0 mr-md-3 scoped-search site-scoped-search js-jump-to">
+        <div class="position-relative">
+          <form target="_blank" action="https://www.google.com/search" accept-charset="UTF-8" method="get"
+            autocomplete="off">
+            <label
+              class="Header-search-label form-control input-sm header-search-wrapper p-0 js-chromeless-input-container header-search-wrapper-jump-to position-relative d-flex flex-justify-between flex-items-center">
+              <input type="text"
+                class="Header-search-input form-control input-sm header-search-input jump-to-field js-jump-to-field js-site-search-focus js-site-search-field is-clearable"
+                name="q" value="" placeholder="Search" autocomplete="off">
+              <input type="hidden" name="q" value="site:https://sjis.me/">
+            </label>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="Header-item Header-item--full flex-justify-center d-md-none position-relative">
+      <a class="Header-link " href="https://sjis.me/">
+        <svg class="octicon octicon-mark-github v-align-middle" height="32" viewBox="0 0 16 16" version="1.1"
+          width="32">
+          <path fill-rule="evenodd"
+            d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z">
+          </path>
+        </svg>
+      </a>
+    </div>
+    <div class="Header-item" style="margin-right: 0;">
+      <a href="javascript:void(0)" class="Header-link no-select" onclick="switchTheme()">
+        <svg style="fill: var(--color-profile-color-modes-toggle-moon);" class="no-select" viewBox="0 0 16 16"
+          version="1.1" width="16" height="16">
+          <path fill-rule="evenodd" clip-rule="evenodd"
+            d="M4.52208 7.71754C7.5782 7.71754 10.0557 5.24006 10.0557 2.18394C10.0557 1.93498 10.0392 1.68986 10.0074 1.44961C9.95801 1.07727 10.3495 0.771159 10.6474 0.99992C12.1153 2.12716 13.0615 3.89999 13.0615 5.89383C13.0615 9.29958 10.3006 12.0605 6.89485 12.0605C3.95334 12.0605 1.49286 10.001 0.876728 7.24527C0.794841 6.87902 1.23668 6.65289 1.55321 6.85451C2.41106 7.40095 3.4296 7.71754 4.52208 7.71754Z">
+          </path>
+        </svg>
+      </a>
+    </div>
+  </header>
+</div>
+  
+<div>
+  <main>
+    <div class="gisthead pagehead bg-gray-light pb-0 pt-3 mb-4">
+      <div class="px-0">
+        <div class="mb-3 d-flex px-3 px-md-3 px-lg-5">
+          <div class="flex-auto min-width-0 width-fit mr-3">
+            <div class="d-flex">
+              <div class="d-none d-md-block">
+                <a class="avatar mr-2 flex-shrink-0" href="https://sjis.me/">
+                  <img class=" avatar-user"
+                    src="https://sjis.me/images/avatar.png"
+                    width="32" height="32"></a>
+              </div>
+              <div class="d-flex flex-column">
+                <h1 class="break-word f3 text-normal mb-md-0 mb-1">
+                  <span class="author">
+                    <a href="https://sjis.me/">SunJun</a></span><span
+                    class="path-divider">/</span><strong class="css-truncate-target mr-1" style="max-width: 410px"><a
+                      href="https://sjis.me/post/2017-07-10-qiniu_upload/">七牛文件上传</a></strong>
+                </h1>
+                <div class="note m-0">
+                  Created <relative-time datetime="Mon, 10 Jul 2017 00:00:00 &#43;0800"
+                    class="no-wrap">
+                    Mon, 10 Jul 2017 00:00:00 &#43;0800</relative-time>
+
+                  
+                  <span class="file-info-divider"></span>
+                  Modified <relative-time datetime="Tue, 27 Sep 2022 13:46:48 &#43;0800"
+                    class="no-wrap">
+                    Tue, 27 Sep 2022 13:46:48 &#43;0800</relative-time>
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-lg px-3 new-discussion-timeline">
+      <div class="repository-content gist-content">
+        <div>
+          <div class="js-gist-file-update-container js-task-list-container file-box">
+            <div id="file-pytest" class="file my-2">
+              <div id="post-header" class="file-header d-flex flex-md-items-center flex-items-start sticky-header" style="z-index: 2">
+                <div class="file-info d-flex flex-md-items-center flex-items-start flex-order-1 flex-auto">
+                  <div class="text-mono f6 flex-auto pr-3 flex-order-2 flex-md-order-1 mt-2 mt-md-0">
+                    
+                    <summary id="toc-toggle" onclick="clickToc()" class="btn btn-octicon m-0 mr-2 p-2">
+                      <svg aria-hidden="true" viewBox="0 0 16 16" height="16" width="16" class="octicon octicon-list-unordered">
+                        <path fill-rule="evenodd" d="M2 4a1 1 0 100-2 1 1 0 000 2zm3.75-1.5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zm0 5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zm0 5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zM3 8a1 1 0 11-2 0 1 1 0 012 0zm-1 6a1 1 0 100-2 1 1 0 000 2z"></path>
+                      </svg>
+                    </summary>
+                    <details-menu class="SelectMenu" id="toc-details" style="display: none;">
+                      <div class="SelectMenu-modal rounded-3 mt-1" style="max-height: 340px;">
+                        <div class="SelectMenu-list SelectMenu-list--borderless p-2" style="overscroll-behavior: contain;" id="toc-list">
+                        </div>
+                      </div>
+                    </details-menu>
+                      1054 Words
+                    
+
+                  </div>
+                  <div class="file-actions flex-order-2 pt-0">
+                    
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="Box-body px-5 pb-5" style="z-index: 1">
+                <article class="markdown-body entry-content container-lg"><h4 id="基本的环境搭建">基本的环境搭建</h4>
+<p>这里使用的是七牛的Java sdk，框架用的是spring boot，至于spring boot的基本框架搭建就不说了。
+maven引入依赖</p>
+<pre tabindex="0"><code>&lt;dependency&gt;
+    &lt;groupId&gt;com.qiniu&lt;/groupId&gt;
+    &lt;artifactId&gt;qiniu-java-sdk&lt;/artifactId&gt;
+    &lt;version&gt;[7.0.0, 7.2.99]&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre><h4 id="上传token的获取">上传token的获取</h4>
+<pre tabindex="0"><code>public String getUpToken(String appId){
+	
+    StringMap map       = new StringMap();
+    StringMap putPolicy = new StringMap();
+
+    map.put(&#34;key&#34;, &#34;${key}&#34;);
+    map.put(&#34;hash&#34;, &#34;${hash}&#34;);
+    map.put(&#34;bucket&#34;, &#34;${bucket}&#34;);
+    map.put(&#34;fsize&#34;, &#34;${fsize}&#34;);
+    map.put(&#34;fname&#34;, &#34;${fname}&#34;);
+    map.put(&#34;appId&#34;, appId);
+
+    Auth auth = Auth.create(Constants.ACCESSS_KEY, Constants.SECRET_KEY);
+    //上传文件不能重复(0:相同文件覆盖;1:相同文件不会覆盖) 只有在设置了key时才会生效,默认相同文件相同key不会覆盖正确返回
+    putPolicy.put(&#34;insertOnly&#34;, 0);
+    //是否启用上传模式(1:启用;0:关闭)启用后 由回调的返回参数的key字段指定七牛中的资源名称
+    putPolicy.put(&#34;callbackFetchKey&#34;, 1);
+    //回调Content-Type
+    putPolicy.put(&#34;callbackBodyType&#34;, &#34;application/json&#34;);
+    //回调URL
+    putPolicy.put(&#34;callbackUrl&#34;, Constants.CALLBACK_URL);
+    //回调post请求体
+    putPolicy.put(&#34;callbackBody&#34;, Json.encode(map));
+
+    String uploadToken = auth.uploadToken(Constants.BUCKET, null, Constants.EXPIRES_1H, putPolicy);
+    return uploadToken;
+}
+</code></pre><p>代码中的<code>callbackBody</code>定义上传返回的变量和用户自定义的魔法变量。其中： <br>
+key：七牛存储空间中的资源名称，可以用户定义或者七牛自动生成一个随机的UUID<br>
+hash：文件的hash值
+bucket：存储空间名称
+fsize：文件大小
+fname：文件名
+appId：自定义变量<br>
+<code>callbackFetchKey</code>：七牛通过回调的返回参数中的key来确定资源文件名称，用于自定义前缀</p>
+<p><img src="https://olef5l6y5.qnssl.com/blog/xQ0AAONdzlhN5s8U-ff4b40ac-5181-4644-9521-80727d177349" alt=""><br>
+这里的appId用于确定哪个业务线，实际项目中应该定义固定的appId，拿到上传Token就可以进行上传操作了。</p>
+<h4 id="文件上传">文件上传</h4>
+<pre tabindex="0"><code>public Object callback(HttpServletRequest request) throws IOException{
+
+		String         line = &#34;&#34;;
+		StringBuilder  sb   = new StringBuilder();
+		BufferedReader br   = new BufferedReader(new InputStreamReader(request.getInputStream()));
+		while ((line = br.readLine()) != null){
+			sb.append(line);
+		}
+
+		String authorization = request.getHeader(&#34;Authorization&#34;);
+		String contentType   = request.getContentType();
+
+		Auth auth = Auth.create(Constants.ACCESSS_KEY, Constants.SECRET_KEY);
+		//七牛回调鉴权
+		boolean             isQiniuCallback = auth.isValidCallback(authorization, Constants.CALLBACK_URL, sb.toString().getBytes(), contentType);
+		Map&lt;String, Object&gt; returnMap       = Maps.newHashMap();
+
+		if (isQiniuCallback){
+
+			CallBackParam callBackParam = Json.decode(sb.toString(), CallBackParam.class);
+
+			String appId = callBackParam.getAppId();
+			String key   = callBackParam.getKey();
+
+			callBackParam.setKey(appId + &#34;/&#34; + key);
+			returnMap.put(&#34;key&#34;, appId + &#34;/&#34; + key);
+			returnMap.put(&#34;payload&#34;, callBackParam);
+
+		} else{
+
+			returnMap.put(&#34;success&#34;, false);
+
+		}
+		return returnMap;
+	}
+</code></pre><p>回调中获得appId以及七牛生成的key，我们将其组装起来以自定义前缀。  我们会看到之前设置的自定义变量<code>appId:blog</code>是在生成token的时候设置的，
+上传完成后会返回给我们。可能有人会问，这里直接上传到七牛不就好了么，为什么还要写一个方法。其实原因很简单，从上面的生成token的方法中已经可
+以看出我们设置了<code>callbackUrl</code>以及<code>callbackBody</code>来让七牛在上传完成的时候本来回调我们自己的接口，只有当我们自己的接口回调成功整个上传才
+会成功，反之失败。而且通过回调我们可以知道我们什么时候上传完成，同时可以进行一系列的log、插表等操作来记录上传信息。
+<img src="https://olef5l6y5.qnssl.com/blog/7B0AAFxPM5lH5s8U-b432ca33-f78b-4648-b54b-56ca658c9656" alt=""></p>
+<h4 id="设置callbackfetchkey情况">设置callbackFetchKey情况</h4>
+<p><img src="https://olef5l6y5.qnssl.com/blog/qi0AAOjAXrzC6M8U-c0dd96ac-5bf5-4063-afab-444443605274" alt=""></p>
+<h4 id="未设置callbackfetchkey情况">未设置callbackFetchKey情况</h4>
+<p><img src="https://olef5l6y5.qnssl.com/blog/ZFsAAKtAPyKg6c8U-5378915c-6904-44b5-9e29-91539e734464" alt="">
+<img src="https://olef5l6y5.qnssl.com/blog/ZFsAAKXEBeuk6c8U-da6e85c9-ee98-49bf-977c-4935af027d52" alt="">
+可以看到回参中有前缀但是七牛存储空间中是没有前缀的</p>
+<p>因为七牛回调需要调用我们本地的接口，可是我们没有公网ip所以使用的ngrok内网穿透来实现的，ngrok的安装我的博客没有写，可以参考我
+<a href="https://wangjun.me/2017/02/24/ngrok/">同事的博客</a>。</p></article>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<script type="application/javascript" src='https://sjis.me/js/toc.js'></script>
+<link rel="stylesheet" href='https://sjis.me/css/toc.css' />
+
+
+  <div class="footer container-xl width-full p-responsive">
+  <div
+    class="position-relative d-flex flex-row-reverse flex-lg-row flex-wrap flex-lg-nowrap flex-justify-center flex-lg-justify-between flex-sm-items-center pt-6 pb-2 mt-6 f6 text-gray border-top border-gray-light ">
+    <a aria-label="Homepage" title="GitHub" class="footer-octicon d-none d-lg-block mr-lg-4" href="https://sjis.me/">
+      <svg height="24" class="octicon octicon-mark-github" viewBox="0 0 16 16" version="1.1" width="24">
+        <path fill-rule="evenodd"
+          d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z">
+        </path>
+      </svg>
+    </a>
+    <ul class="list-style-none d-flex flex-wrap col-12 flex-justify-center flex-lg-justify-between mb-2 mb-lg-0">
+      
+      <li class="mr-3 mr-lg-0">Theme by <a href='https://github.com/MeiK2333/github-style'>github-style</a></li>
+      
+    </ul>
+  </div>
+  <div class="d-flex flex-justify-center pb-6">
+    <span class="f6 text-gray-light"></span>
+  </div>
+
+
+</div>
+</body>
+
+<script type="application/javascript" src="https://sjis.me/js/github-style.js"></script>
+
+
+
+
+</html>

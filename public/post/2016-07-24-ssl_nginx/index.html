@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <script type="application/javascript" src='https://sjis.me/js/theme-mode.js'></script>
+    <link rel="stylesheet" href='https://sjis.me/css/frameworks.min.css' />
+    <link rel="stylesheet" href='https://sjis.me/css/github.min.css' />
+    <link rel="stylesheet" href='https://sjis.me/css/github-style.css' />
+    <link rel="stylesheet" href='https://sjis.me/css/light.css' />
+    <link rel="stylesheet" href='https://sjis.me/css/dark.css' />
+    <link rel="stylesheet" href='https://sjis.me/css/syntax.css' />
+    <title>Nginx配置ssl模块 - SunJun&#39;s blog</title>
+    
+    <link rel="icon" type="image/x-icon" href='/images/github.png'>
+    
+    <meta name="theme-color" content="#1e2327">
+
+    
+    <meta name="description"
+  content="什么是HTTPS？ 根据维基百科的解释：
+超文本传输安全协议（缩写：HTTPS，英语：Hypertext Transfer Protocol Secure）是超文本传输协议和SSL/TLS的组合，用以提供加密通讯及对网络服务器身份的鉴定。
+" />
+<meta name="keywords"
+  content='blog, google analytics' />
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="https://sjis.me/post/2016-07-24-ssl_nginx/" />
+
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Nginx配置ssl模块 - SunJun&#39;s blog" />
+<meta name="twitter:description"
+  content="什么是HTTPS？ 根据维基百科的解释：
+超文本传输安全协议（缩写：HTTPS，英语：Hypertext Transfer Protocol Secure）是超文本传输协议和SSL/TLS的组合，用以提供加密通讯及对网络服务器身份的鉴定。
+" />
+<meta name="twitter:site" content="https://sjis.me/" />
+<meta name="twitter:creator" content="" />
+<meta name="twitter:image"
+  content="https://sjis.me/">
+
+
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Nginx配置ssl模块 - SunJun&#39;s blog">
+<meta property="og:description"
+  content="什么是HTTPS？ 根据维基百科的解释：
+超文本传输安全协议（缩写：HTTPS，英语：Hypertext Transfer Protocol Secure）是超文本传输协议和SSL/TLS的组合，用以提供加密通讯及对网络服务器身份的鉴定。
+" />
+<meta property="og:url" content="https://sjis.me/post/2016-07-24-ssl_nginx/" />
+<meta property="og:site_name" content="Nginx配置ssl模块" />
+<meta property="og:image"
+  content="https://sjis.me/">
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+<meta property="article:published_time" content="2016-07-24 00:00:00 &#43;0800 CST" />
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body>
+  <div style="position: relative">
+  <header class="Header js-details-container Details px-3 px-md-4 px-lg-5 flex-wrap flex-md-nowrap open Details--on">
+    <div class="Header-item mobile-none" style="margin-top: -4px; margin-bottom: -4px;">
+      <a class="Header-link" href="https://sjis.me/">
+        <svg class="octicon" height="32" viewBox="0 0 16 16" version="1.1" width="32">
+          <path fill-rule="evenodd"
+            d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z">
+          </path>
+        </svg>
+      </a>
+    </div>
+    <div class="Header-item d-md-none">
+      <button class="Header-link btn-link js-details-target" type="button"
+        onclick="document.querySelector('#header-search').style.display = document.querySelector('#header-search').style.display == 'none'? 'block': 'none'">
+        <svg height="24" class="octicon octicon-three-bars" viewBox="0 0 16 16" version="1.1" width="24">
+          <path fill-rule="evenodd"
+            d="M1 2.75A.75.75 0 011.75 2h12.5a.75.75 0 110 1.5H1.75A.75.75 0 011 2.75zm0 5A.75.75 0 011.75 7h12.5a.75.75 0 110 1.5H1.75A.75.75 0 011 7.75zM1.75 12a.75.75 0 100 1.5h12.5a.75.75 0 100-1.5H1.75z">
+          </path>
+        </svg>
+      </button>
+    </div>
+    <div style="display: none;" id="header-search"
+      class="Header-item Header-item--full flex-column flex-md-row width-full flex-order-2 flex-md-order-none mr-0 mr-md-3 mt-3 mt-md-0 Details-content--hidden-not-important d-md-flex">
+      <div
+        class="Header-search header-search flex-auto js-site-search position-relative flex-self-stretch flex-md-self-auto mb-3 mb-md-0 mr-0 mr-md-3 scoped-search site-scoped-search js-jump-to">
+        <div class="position-relative">
+          <form target="_blank" action="https://www.google.com/search" accept-charset="UTF-8" method="get"
+            autocomplete="off">
+            <label
+              class="Header-search-label form-control input-sm header-search-wrapper p-0 js-chromeless-input-container header-search-wrapper-jump-to position-relative d-flex flex-justify-between flex-items-center">
+              <input type="text"
+                class="Header-search-input form-control input-sm header-search-input jump-to-field js-jump-to-field js-site-search-focus js-site-search-field is-clearable"
+                name="q" value="" placeholder="Search" autocomplete="off">
+              <input type="hidden" name="q" value="site:https://sjis.me/">
+            </label>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="Header-item Header-item--full flex-justify-center d-md-none position-relative">
+      <a class="Header-link " href="https://sjis.me/">
+        <svg class="octicon octicon-mark-github v-align-middle" height="32" viewBox="0 0 16 16" version="1.1"
+          width="32">
+          <path fill-rule="evenodd"
+            d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z">
+          </path>
+        </svg>
+      </a>
+    </div>
+    <div class="Header-item" style="margin-right: 0;">
+      <a href="javascript:void(0)" class="Header-link no-select" onclick="switchTheme()">
+        <svg style="fill: var(--color-profile-color-modes-toggle-moon);" class="no-select" viewBox="0 0 16 16"
+          version="1.1" width="16" height="16">
+          <path fill-rule="evenodd" clip-rule="evenodd"
+            d="M4.52208 7.71754C7.5782 7.71754 10.0557 5.24006 10.0557 2.18394C10.0557 1.93498 10.0392 1.68986 10.0074 1.44961C9.95801 1.07727 10.3495 0.771159 10.6474 0.99992C12.1153 2.12716 13.0615 3.89999 13.0615 5.89383C13.0615 9.29958 10.3006 12.0605 6.89485 12.0605C3.95334 12.0605 1.49286 10.001 0.876728 7.24527C0.794841 6.87902 1.23668 6.65289 1.55321 6.85451C2.41106 7.40095 3.4296 7.71754 4.52208 7.71754Z">
+          </path>
+        </svg>
+      </a>
+    </div>
+  </header>
+</div>
+  
+<div>
+  <main>
+    <div class="gisthead pagehead bg-gray-light pb-0 pt-3 mb-4">
+      <div class="px-0">
+        <div class="mb-3 d-flex px-3 px-md-3 px-lg-5">
+          <div class="flex-auto min-width-0 width-fit mr-3">
+            <div class="d-flex">
+              <div class="d-none d-md-block">
+                <a class="avatar mr-2 flex-shrink-0" href="https://sjis.me/">
+                  <img class=" avatar-user"
+                    src="https://sjis.me/images/avatar.png"
+                    width="32" height="32"></a>
+              </div>
+              <div class="d-flex flex-column">
+                <h1 class="break-word f3 text-normal mb-md-0 mb-1">
+                  <span class="author">
+                    <a href="https://sjis.me/">SunJun</a></span><span
+                    class="path-divider">/</span><strong class="css-truncate-target mr-1" style="max-width: 410px"><a
+                      href="https://sjis.me/post/2016-07-24-ssl_nginx/">Nginx配置ssl模块</a></strong>
+                </h1>
+                <div class="note m-0">
+                  Created <relative-time datetime="Sun, 24 Jul 2016 00:00:00 &#43;0800"
+                    class="no-wrap">
+                    Sun, 24 Jul 2016 00:00:00 &#43;0800</relative-time>
+
+                  
+                  <span class="file-info-divider"></span>
+                  Modified <relative-time datetime="Tue, 27 Sep 2022 13:46:48 &#43;0800"
+                    class="no-wrap">
+                    Tue, 27 Sep 2022 13:46:48 &#43;0800</relative-time>
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-lg px-3 new-discussion-timeline">
+      <div class="repository-content gist-content">
+        <div>
+          <div class="js-gist-file-update-container js-task-list-container file-box">
+            <div id="file-pytest" class="file my-2">
+              <div id="post-header" class="file-header d-flex flex-md-items-center flex-items-start sticky-header" style="z-index: 2">
+                <div class="file-info d-flex flex-md-items-center flex-items-start flex-order-1 flex-auto">
+                  <div class="text-mono f6 flex-auto pr-3 flex-order-2 flex-md-order-1 mt-2 mt-md-0">
+                    
+                    <summary id="toc-toggle" onclick="clickToc()" class="btn btn-octicon m-0 mr-2 p-2">
+                      <svg aria-hidden="true" viewBox="0 0 16 16" height="16" width="16" class="octicon octicon-list-unordered">
+                        <path fill-rule="evenodd" d="M2 4a1 1 0 100-2 1 1 0 000 2zm3.75-1.5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zm0 5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zm0 5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zM3 8a1 1 0 11-2 0 1 1 0 012 0zm-1 6a1 1 0 100-2 1 1 0 000 2z"></path>
+                      </svg>
+                    </summary>
+                    <details-menu class="SelectMenu" id="toc-details" style="display: none;">
+                      <div class="SelectMenu-modal rounded-3 mt-1" style="max-height: 340px;">
+                        <div class="SelectMenu-list SelectMenu-list--borderless p-2" style="overscroll-behavior: contain;" id="toc-list">
+                        </div>
+                      </div>
+                    </details-menu>
+                      1667 Words
+                    
+
+                  </div>
+                  <div class="file-actions flex-order-2 pt-0">
+                    
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="Box-body px-5 pb-5" style="z-index: 1">
+                <article class="markdown-body entry-content container-lg"><h4 id="什么是https">什么是HTTPS？</h4>
+<p>根据维基百科的解释：</p>
+<p>超文本传输安全协议（缩写：HTTPS，英语：Hypertext Transfer Protocol Secure）是超文本传输协议和SSL/TLS的组合，用以提供加密通讯及对网络服务器身份的鉴定。</p>
+<p>HTTPS连接经常被用于万维网上的交易支付和企业信息系统中敏感信息的传输。HTTPS不应与在RFC 2660中定义的安全超文本传输协议（S-HTTP）相混。
+HTTPS 目前已经是所有注重隐私和安全的网站的首选，随着技术的不断发展，HTTPS 网站已不再是大型网站的专利，所有普通的个人站长和博客均可以自己动手搭建一个安全的加密的网站。</p>
+<p>如果一个网站没有加密，那么你的所有帐号密码都是明文传输。可想而知，如果涉及到隐私和金融问题，不加密的传输是多么可怕的一件事。</p>
+<p>鉴于本博客的读者都是接近专业人士，我们不再多费口舌，直接进入正题吧。</p>
+<h4 id="使用openssl生成ssl-key和csr">使用OpenSSL生成SSL Key和CSR</h4>
+<p>由于只有浏览器或者系统信赖的 CA 才可以让所有的访问者通畅的访问你的加密网站，而不是出现证书错误的提示。所以我们跳过自签证书的步骤，直接开始签署第三方可信任的 SSL 证书吧。</p>
+<p>OpenSSL 在 Linux、OS X 等常规的系统下默认都安装了，因为一些安全问题，一般现在的第三方 SSL 证书签发机构都要求起码 2048 位的 RSA 加密的私钥。</p>
+<p>同时，普通的 SSL 证书认证分两种形式，一种是 DV（Domain Validated），还有一种是 OV （Organization Validated），前者只需要验证域名，后者需要验证你的组织或公司，在安全性方面，肯定是后者要好。</p>
+<p>无论你用 DV 还是 OV 生成私钥，都需要填写一些基本信息，这里我们假设如下：</p>
+<p>域名，也称为 Common Name，因为特殊的证书不一定是域名：example.com</p>
+<p>组织或公司名字（Organization）：Example, Inc.</p>
+<p>部门（Department）：可以不填写，这里我们写 Web Security</p>
+<p>城市（City）：Beijing</p>
+<p>省份（State / Province）：Beijing</p>
+<p>国家（Country）：CN</p>
+<p>加密强度：2048 位，如果你的机器性能强劲，也可以选择 4096 位</p>
+<p>按照以上信息，使用 OpenSSL 生成 key 和 csr 的命令如下</p>
+<p>openssl req -new -newkey rsa:2048 -sha256 -nodes -out example_com.csr -keyout example_com.key -subj &ldquo;/C=CN/ST=Beijing/L=Beijing/O=Example Inc./OU=Web Security/CN=example.com&rdquo;
+PS：如果是泛域名证书，则应该填写 *.example.com</p>
+<p>你可以在系统的任何地方运行这个命令，会自动在当前目录生成 example_com.csr 和 example_com.key 这两个文件</p>
+<p>接下来你可以查看一下 example_com.csr，得到类似这么一长串的文字</p>
+<p>&mdash;&ndash;BEGIN CERTIFICATE REQUEST&mdash;&ndash;
+MIICujCCAaICAQAwdTELMAkGA1UEBhMCQ04xEDAOBgNVBAgTB0JlaWppbmcxEDAO
+BgNVBAcTB0JlaWppbmcxFTATBgNVBAoTDEV4YW1wbGUgSW5jLjEVMBMGA1UECxMM
+V2ViIFNlY3VyaXR5MRQwEgYDVQQDEwtleGFtcGxlLmNvbTCCASIwDQYJKoZIhvcN
+AQEBBQADggEPADCCAQoCggEBAPME+nvVCdGN9VWn+vp7JkMoOdpOurYMPvclIbsI
+iD7mGN982Ocl22O9wCV/4tL6DpTcXfNX+eWd7CNEKT4i+JYGqllqP3/CojhkemiY
+SF3jwncvP6VoST/HsZeMyNB71XwYnxFCGqSyE3QjxmQ9ae38H2LIpCllfd1l7iVp
+AX4i2+HvGTHFzb0XnmMLzq4HyVuEIMoYwiZX8hq+kwEAhKpBdfawkOcIRkbOlFew
+SEjLyHY+nruXutmQx1d7lzZCxut5Sm5At9al0bf5FOaaJylTEwNEpFkP3L29GtoU
+qg1t9Q8WufIfK9vXqQqwg8J1muK7kksnbYcoPnNgPx36kZsCAwEAAaAAMA0GCSqG
+SIb3DQEBBQUAA4IBAQCHgIuhpcgrsNwDuW6731/DeVwq2x3ZRqRBuj9/M8oONQen
+1QIacBifEMr+Ma+C+wIpt3bHvtXEF8cCAJAR9sQ4Svy7M0w25DwrwaWIjxcf/J8U
+audL/029CkAuewFCdBILTRAAeDqxsAsUyiBIGTIT+uqi+EpGG4OlyKK/MF13FxDj
+/oKyrSJDtp1Xr9R7iqGCs/Zl5qWmDaLN7/qxBK6vX2R/HLhOK0aKi1ZQ4cZeP7Mr
+8EzjDIAko87Nb/aIsFyKrt6Ze3jOF0/vnnpw7pMvhq+folWdTVXddjd9Dpr2x1nc
+y5hnop4k6kVRXDjQ4OTduQq4P+SzU4hb41GIQEz4<br>
+&mdash;&ndash;END CERTIFICATE REQUEST&mdash;&ndash;<br>
+这个 CSR 文件就是你需要提交给 SSL 认证机构的，当你的域名或组织通过验证后，认证机构就会颁发给你一个 example_com.crt</p>
+<p>而 example_com.key 是需要用在 Nginx 配置里和 example_com.crt 配合使用的，需要好好保管，千万别泄露给任何第三方。</p>
+<h4 id="可靠的第三方ssl签发机构">可靠的第三方SSL签发机构</h4>
+<p>本站使用的是沃通的免费电子证书<a href="https://buy.wosign.com/free/">申请免费电子证书</a>，在网站填写域名登陆并提交申请验证域名所有权之后我们就可以拿到生成的证书，解压以后选择对应服务器的证书配置服务器即可，本站使用的是Nginx所以选择Nginx包下的证书。</p>
+<h4 id="nginx配置https网站以及增加安全的配置">Nginx配置HTTPS网站以及增加安全的配置</h4>
+<p>前面已经提到，你需要提交 CSR 文件给第三方 SSL 认证机构，通过认证后，他们会颁发给你一个 CRT 文件，我们命名为 example_com.crt</p>
+<p>同时，为了统一，你可以把这三个文件都移动到 /etc/nginx/ 目录。</p>
+<p>然后可以修改 Nginx 配置文件 <code>nginx.conf</code></p>
+<pre tabindex="0"><code>server{  
+listen 80;  
+listen [::]:80 ssl ipv6only=on;  
+listen 443 ssl;  
+listen [::]:443 ssl ipv6only=on;  
+server_name example.com;  
+
+ssl on;  
+ssl_certificate /etc/nginx/example_com.crt;  
+ssl_certificate_key /etc/nginx/example_com.key;  
+}
+</code></pre><p>但是这么做并不安全，默认是 SHA-1 形式，而现在主流的方案应该都避免 SHA-1，为了确保更强的安全性，我们可以采取迪菲－赫尔曼密钥交换。首先，进入 <code>/etc/ssl/certs</code> 目录并生成一个 <code>dhparam.pem</code></p>
+<pre tabindex="0"><code>cd /etc/ssl/certs 
+openssl dhparam -out dhparam.pem 2048 #如果你的机器性能足够强大，可以用 4096 位加密
+</code></pre><p>生成完毕后，在 Nginx 的 SSL 配置后面加入</p>
+<pre tabindex="0"><code>sl_dhparam /etc/ssl/certs/dhparam.pem;
+</code></pre><p>并且配置网站所有请求跳转https</p>
+<pre tabindex="0"><code> location / {  
+   rewrite ^/(.*) https://&amp;host/$1 permanent;  
+ }
+</code></pre><p>https默认跳转443端口，在nginx下新建<code>vhosts</code>文件夹放不同主机配置。<br>
+这里以本网站域名为例，贴上配置，以供参考：</p>
+<pre tabindex="0"><code>server {  
+  server_name  sunsblog.cn www.sunsblog.cn;  
+  listen 443 ssl http2 default_server;  
+  ssl on;  
+  ssl_protocols TLSv1 TLSv1.1 TLSv1.2;  
+  ssl_certificate /etc/nginx/sunsblog.cn.crt;  
+  ssl_certificate_key /etc/nginx/sunsblog.cn.key;  
+  ssl_prefer_server_ciphers on;  
+  ssl_ciphers &#34;ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES128-SHA256:DHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA:DES-CBC3-SHA:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4&#34;;  
+
+  #ssl_dhparam /etc/ssl/dhparam4096.pem;  
+
+  ssl_session_cache    shared:SSL:1m;  
+
+  ssl_session_timeout  10m;  
+  #ssl_stapling on;  
+  #ssl_stapling_verify on;  
+
+  root /root/ddatsh.github.io;  
+  #Add index.php to the list if you are using PHP  
+  index index.html index.htm index.nginx-debian.html;  
+ 
+  add_header Strict-Transport-Security &#34;max-age=63072000;   includeSubdomains;preload&#34;;  
+  add_header X-Frame-Options DENY;  
+  add_header X-Content-Type-Options nosniff;  
+  if ( $host ~* &#34;\d+\.\d+\.\d+\.\d+&#34; ) {  
+   return 503;
+  }
+
+error_page   500 502 503 504  /50x.html;
+  location = /50x.html {
+   root   html;
+  }
+  location / {
+   root   /www/blog;
+   #proxy_pass http://localhost:4000;
+   #root   /usr/local/nginx/html;
+   #root /usr/local/ink/blog/public;
+   #root /usr/local/www_root/app-wzst;
+   #    alias d:/ddatsh.github.io;
+   index  index.html;
+ }
+ location /logs {
+
+   alias /usr/local/nginx/logs;
+   autoindex on;
+
+   autoindex_exact_size off;
+
+   autoindex_localtime on;
+   add_header Cache-Control no-store;
+
+   auth_basic &#34;Restricted&#34;;
+   auth_basic_user_file /usr/local/nginx/conf/loguser;
+ }
+}
+</code></pre></article>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<script type="application/javascript" src='https://sjis.me/js/toc.js'></script>
+<link rel="stylesheet" href='https://sjis.me/css/toc.css' />
+
+
+  <div class="footer container-xl width-full p-responsive">
+  <div
+    class="position-relative d-flex flex-row-reverse flex-lg-row flex-wrap flex-lg-nowrap flex-justify-center flex-lg-justify-between flex-sm-items-center pt-6 pb-2 mt-6 f6 text-gray border-top border-gray-light ">
+    <a aria-label="Homepage" title="GitHub" class="footer-octicon d-none d-lg-block mr-lg-4" href="https://sjis.me/">
+      <svg height="24" class="octicon octicon-mark-github" viewBox="0 0 16 16" version="1.1" width="24">
+        <path fill-rule="evenodd"
+          d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z">
+        </path>
+      </svg>
+    </a>
+    <ul class="list-style-none d-flex flex-wrap col-12 flex-justify-center flex-lg-justify-between mb-2 mb-lg-0">
+      
+      <li class="mr-3 mr-lg-0">Theme by <a href='https://github.com/MeiK2333/github-style'>github-style</a></li>
+      
+    </ul>
+  </div>
+  <div class="d-flex flex-justify-center pb-6">
+    <span class="f6 text-gray-light"></span>
+  </div>
+
+
+</div>
+</body>
+
+<script type="application/javascript" src="https://sjis.me/js/github-style.js"></script>
+
+
+
+
+</html>

@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <script type="application/javascript" src='https://sjis.me/js/theme-mode.js'></script>
+    <link rel="stylesheet" href='https://sjis.me/css/frameworks.min.css' />
+    <link rel="stylesheet" href='https://sjis.me/css/github.min.css' />
+    <link rel="stylesheet" href='https://sjis.me/css/github-style.css' />
+    <link rel="stylesheet" href='https://sjis.me/css/light.css' />
+    <link rel="stylesheet" href='https://sjis.me/css/dark.css' />
+    <link rel="stylesheet" href='https://sjis.me/css/syntax.css' />
+    <title>openpgp签名与验签 - SunJun&#39;s blog</title>
+    
+    <link rel="icon" type="image/x-icon" href='/images/github.png'>
+    
+    <meta name="theme-color" content="#1e2327">
+
+    
+    <meta name="description"
+  content="存在的问题 目前每次程序版本发布需要手动gpg签名并打包发布，存在的问题：
+ 每次都需要人工手动使用gpg签名 如果如果需要签名发布的app变多也会增加很多重复劳动 其他项目或应用文件签名下发需要一个统一的接口 " />
+<meta name="keywords"
+  content='blog, google analytics' />
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="https://sjis.me/post/2018-01-23-go_java_signature_check/" />
+
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="openpgp签名与验签 - SunJun&#39;s blog" />
+<meta name="twitter:description"
+  content="存在的问题 目前每次程序版本发布需要手动gpg签名并打包发布，存在的问题：
+ 每次都需要人工手动使用gpg签名 如果如果需要签名发布的app变多也会增加很多重复劳动 其他项目或应用文件签名下发需要一个统一的接口 " />
+<meta name="twitter:site" content="https://sjis.me/" />
+<meta name="twitter:creator" content="" />
+<meta name="twitter:image"
+  content="https://sjis.me/">
+
+
+<meta property="og:type" content="article" />
+<meta property="og:title" content="openpgp签名与验签 - SunJun&#39;s blog">
+<meta property="og:description"
+  content="存在的问题 目前每次程序版本发布需要手动gpg签名并打包发布，存在的问题：
+ 每次都需要人工手动使用gpg签名 如果如果需要签名发布的app变多也会增加很多重复劳动 其他项目或应用文件签名下发需要一个统一的接口 " />
+<meta property="og:url" content="https://sjis.me/post/2018-01-23-go_java_signature_check/" />
+<meta property="og:site_name" content="openpgp签名与验签" />
+<meta property="og:image"
+  content="https://sjis.me/">
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+<meta property="article:published_time" content="2018-01-23 00:00:00 &#43;0800 CST" />
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body>
+  <div style="position: relative">
+  <header class="Header js-details-container Details px-3 px-md-4 px-lg-5 flex-wrap flex-md-nowrap open Details--on">
+    <div class="Header-item mobile-none" style="margin-top: -4px; margin-bottom: -4px;">
+      <a class="Header-link" href="https://sjis.me/">
+        <svg class="octicon" height="32" viewBox="0 0 16 16" version="1.1" width="32">
+          <path fill-rule="evenodd"
+            d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z">
+          </path>
+        </svg>
+      </a>
+    </div>
+    <div class="Header-item d-md-none">
+      <button class="Header-link btn-link js-details-target" type="button"
+        onclick="document.querySelector('#header-search').style.display = document.querySelector('#header-search').style.display == 'none'? 'block': 'none'">
+        <svg height="24" class="octicon octicon-three-bars" viewBox="0 0 16 16" version="1.1" width="24">
+          <path fill-rule="evenodd"
+            d="M1 2.75A.75.75 0 011.75 2h12.5a.75.75 0 110 1.5H1.75A.75.75 0 011 2.75zm0 5A.75.75 0 011.75 7h12.5a.75.75 0 110 1.5H1.75A.75.75 0 011 7.75zM1.75 12a.75.75 0 100 1.5h12.5a.75.75 0 100-1.5H1.75z">
+          </path>
+        </svg>
+      </button>
+    </div>
+    <div style="display: none;" id="header-search"
+      class="Header-item Header-item--full flex-column flex-md-row width-full flex-order-2 flex-md-order-none mr-0 mr-md-3 mt-3 mt-md-0 Details-content--hidden-not-important d-md-flex">
+      <div
+        class="Header-search header-search flex-auto js-site-search position-relative flex-self-stretch flex-md-self-auto mb-3 mb-md-0 mr-0 mr-md-3 scoped-search site-scoped-search js-jump-to">
+        <div class="position-relative">
+          <form target="_blank" action="https://www.google.com/search" accept-charset="UTF-8" method="get"
+            autocomplete="off">
+            <label
+              class="Header-search-label form-control input-sm header-search-wrapper p-0 js-chromeless-input-container header-search-wrapper-jump-to position-relative d-flex flex-justify-between flex-items-center">
+              <input type="text"
+                class="Header-search-input form-control input-sm header-search-input jump-to-field js-jump-to-field js-site-search-focus js-site-search-field is-clearable"
+                name="q" value="" placeholder="Search" autocomplete="off">
+              <input type="hidden" name="q" value="site:https://sjis.me/">
+            </label>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="Header-item Header-item--full flex-justify-center d-md-none position-relative">
+      <a class="Header-link " href="https://sjis.me/">
+        <svg class="octicon octicon-mark-github v-align-middle" height="32" viewBox="0 0 16 16" version="1.1"
+          width="32">
+          <path fill-rule="evenodd"
+            d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z">
+          </path>
+        </svg>
+      </a>
+    </div>
+    <div class="Header-item" style="margin-right: 0;">
+      <a href="javascript:void(0)" class="Header-link no-select" onclick="switchTheme()">
+        <svg style="fill: var(--color-profile-color-modes-toggle-moon);" class="no-select" viewBox="0 0 16 16"
+          version="1.1" width="16" height="16">
+          <path fill-rule="evenodd" clip-rule="evenodd"
+            d="M4.52208 7.71754C7.5782 7.71754 10.0557 5.24006 10.0557 2.18394C10.0557 1.93498 10.0392 1.68986 10.0074 1.44961C9.95801 1.07727 10.3495 0.771159 10.6474 0.99992C12.1153 2.12716 13.0615 3.89999 13.0615 5.89383C13.0615 9.29958 10.3006 12.0605 6.89485 12.0605C3.95334 12.0605 1.49286 10.001 0.876728 7.24527C0.794841 6.87902 1.23668 6.65289 1.55321 6.85451C2.41106 7.40095 3.4296 7.71754 4.52208 7.71754Z">
+          </path>
+        </svg>
+      </a>
+    </div>
+  </header>
+</div>
+  
+<div>
+  <main>
+    <div class="gisthead pagehead bg-gray-light pb-0 pt-3 mb-4">
+      <div class="px-0">
+        <div class="mb-3 d-flex px-3 px-md-3 px-lg-5">
+          <div class="flex-auto min-width-0 width-fit mr-3">
+            <div class="d-flex">
+              <div class="d-none d-md-block">
+                <a class="avatar mr-2 flex-shrink-0" href="https://sjis.me/">
+                  <img class=" avatar-user"
+                    src="https://sjis.me/images/avatar.png"
+                    width="32" height="32"></a>
+              </div>
+              <div class="d-flex flex-column">
+                <h1 class="break-word f3 text-normal mb-md-0 mb-1">
+                  <span class="author">
+                    <a href="https://sjis.me/">SunJun</a></span><span
+                    class="path-divider">/</span><strong class="css-truncate-target mr-1" style="max-width: 410px"><a
+                      href="https://sjis.me/post/2018-01-23-go_java_signature_check/">openpgp签名与验签</a></strong>
+                </h1>
+                <div class="note m-0">
+                  Created <relative-time datetime="Tue, 23 Jan 2018 00:00:00 &#43;0800"
+                    class="no-wrap">
+                    Tue, 23 Jan 2018 00:00:00 &#43;0800</relative-time>
+
+                  
+                  <span class="file-info-divider"></span>
+                  Modified <relative-time datetime="Tue, 27 Sep 2022 13:46:48 &#43;0800"
+                    class="no-wrap">
+                    Tue, 27 Sep 2022 13:46:48 &#43;0800</relative-time>
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-lg px-3 new-discussion-timeline">
+      <div class="repository-content gist-content">
+        <div>
+          <div class="js-gist-file-update-container js-task-list-container file-box">
+            <div id="file-pytest" class="file my-2">
+              <div id="post-header" class="file-header d-flex flex-md-items-center flex-items-start sticky-header" style="z-index: 2">
+                <div class="file-info d-flex flex-md-items-center flex-items-start flex-order-1 flex-auto">
+                  <div class="text-mono f6 flex-auto pr-3 flex-order-2 flex-md-order-1 mt-2 mt-md-0">
+                    
+                    <summary id="toc-toggle" onclick="clickToc()" class="btn btn-octicon m-0 mr-2 p-2">
+                      <svg aria-hidden="true" viewBox="0 0 16 16" height="16" width="16" class="octicon octicon-list-unordered">
+                        <path fill-rule="evenodd" d="M2 4a1 1 0 100-2 1 1 0 000 2zm3.75-1.5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zm0 5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zm0 5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zM3 8a1 1 0 11-2 0 1 1 0 012 0zm-1 6a1 1 0 100-2 1 1 0 000 2z"></path>
+                      </svg>
+                    </summary>
+                    <details-menu class="SelectMenu" id="toc-details" style="display: none;">
+                      <div class="SelectMenu-modal rounded-3 mt-1" style="max-height: 340px;">
+                        <div class="SelectMenu-list SelectMenu-list--borderless p-2" style="overscroll-behavior: contain;" id="toc-list">
+                        </div>
+                      </div>
+                    </details-menu>
+                      1144 Words
+                    
+
+                  </div>
+                  <div class="file-actions flex-order-2 pt-0">
+                    
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="Box-body px-5 pb-5" style="z-index: 1">
+                <article class="markdown-body entry-content container-lg"><h4 id="存在的问题">存在的问题</h4>
+<p>目前每次程序版本发布需要手动gpg签名并打包发布，存在的问题：</p>
+<ul>
+<li>每次都需要人工手动使用gpg签名</li>
+<li>如果如果需要签名发布的app变多也会增加很多重复劳动</li>
+<li>其他项目或应用文件签名下发需要一个统一的接口</li>
+</ul>
+<p>其实也考虑过写脚本进行签名，但是生产机器还需要装gpg比较麻烦。其实主要还是想学习一下如何代码进行gpg加密,哈哈&hellip;</p>
+<h4 id="golang-openpgp签名验签">golang openpgp签名验签</h4>
+<p>其实公司需要的是java版，但是最近一直在做go的项目，并且以后go的项目说不定也会用到。虽然语言不通，但也作为摸索签名加密的一种途径。</p>
+<pre tabindex="0"><code>package main
+
+import (
+	&#34;bytes&#34;
+	&#34;golang.org/x/crypto/openpgp&#34;
+	&#34;os&#34;
+	&#34;io/ioutil&#34;
+)
+
+func main()  {
+  ArmoredDetachSign(&#34;d:/test.txt&#34;)
+  CheckArmoredDetachedSignature(&#34;d:/test.txt.asc&#34;,&#34;d:/test.txt&#34;)
+}
+
+//CheckArmoredDetachedSignature openpgp验签
+func CheckArmoredDetachedSignature(signatureFile, verificationFile string) (*openpgp.Entity, error) {
+
+	pubring, err := ioutil.ReadFile(&#34;path to pubring.gpg&#34;)
+	keyRingReader := bytes.NewBuffer(pubring)
+
+	signature, err := os.Open(signatureFile)
+	if err != nil {
+		return nil, err
+	}
+	defer signature.Close()
+
+	verification, err := os.Open(verificationFile)
+	if err != nil {
+		return nil, err
+	}
+	defer verification.Close()
+
+	keyring, err := openpgp.ReadKeyRing(keyRingReader)
+	if err != nil {
+		return nil, err
+	}
+	entity, err := openpgp.CheckArmoredDetachedSignature(keyring, verification, signature)
+	if err != nil {
+		return nil, err
+	}
+	return entity, nil
+}
+
+//ArmoredDetachSign openpgp签名
+func ArmoredDetachSign(signFile string) error {
+
+	var entity *openpgp.Entity
+	var entityList openpgp.EntityList
+
+	pubring, err := ioutil.ReadFile(&#34;path to secring.gpg&#34;)
+	if err!=nil{
+		return err
+	}
+	keyringFileBuffer := bytes.NewBuffer(pubring)
+
+	entityList, err = openpgp.ReadKeyRing(keyringFileBuffer)
+	if err != nil {
+		return err
+	}
+	entity = entityList[0]
+
+	passPhraseByte := []byte(&#34;your private key password&#34;)
+	entity.PrivateKey.Decrypt(passPhraseByte)
+	for _, subKey := range entity.Subkeys {
+		subKey.PrivateKey.Decrypt(passPhraseByte)
+	}
+
+	sign, err := os.Open(signFile)
+	if err != nil {
+		return err
+	}
+	defer sign.Close()
+
+	asc, err := os.Create(signFile + &#34;.asc&#34;)
+	if err != nil {
+		return err
+	}
+	defer asc.Close()
+
+	err = openpgp.ArmoredDetachSign(asc, entity, sign, nil)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+</code></pre><h4 id="java-openpgp签名验签">java openpgp签名验签</h4>
+<p>maven引入依赖</p>
+<pre tabindex="0"><code>&lt;dependency&gt;
+     &lt;groupId&gt;org.bouncycastle&lt;/groupId&gt;
+     &lt;artifactId&gt;bcprov-jdk15on&lt;/artifactId&gt;
+     &lt;version&gt;1.59&lt;/version&gt;
+ &lt;/dependency&gt;
+ &lt;dependency&gt;
+     &lt;groupId&gt;org.bouncycastle&lt;/groupId&gt;
+     &lt;artifactId&gt;bcpg-jdk15on&lt;/artifactId&gt;
+     &lt;version&gt;1.59&lt;/version&gt;
+ &lt;/dependency&gt;
+</code></pre><p>记住一定要使用最新的1.59版本，之前的版本都是jdk1.5、1.6版本编译的，我们现在项目都是1.8版本差异太大无法编译。</p>
+<pre tabindex="0"><code>import org.apache.commons.io.*;
+import org.bouncycastle.bcpg.*;
+import org.bouncycastle.jce.provider.*;
+import org.bouncycastle.openpgp.*;
+import org.bouncycastle.openpgp.jcajce.*;
+import org.bouncycastle.openpgp.operator.jcajce.*;
+
+import java.io.*;
+import java.security.*;
+import java.util.*;
+
+/**
+ * OpenGPG签名工具类
+ *
+ * @author SunJun
+ */
+public class OpenPgpService {
+
+    public static void main(String[] args) throws Exception {
+
+        Security.addProvider(new BouncyCastleProvider());
+        createSignature(&#34;d:/test.txt&#34;, &#34;d:/test.txt.asc&#34;, true);
+        verifySignature(&#34;d:/test.txt&#34;,&#34;d:/test.txt.asc&#34;);
+    }
+
+    /**
+     * verifySignature 签名验证
+     *
+     * @param fileName      待验签文件名
+     * @param inputFileName asc文件
+     * @author SunJun
+     */
+    public static boolean verifySignature(String fileName, String inputFileName) throws IOException,
+            PGPException {
+
+        InputStream in = null;
+        InputStream keyIn = null;
+        boolean result;
+
+        try {
+
+            in = new BufferedInputStream(new FileInputStream(inputFileName));
+            keyIn = new BufferedInputStream(new FileInputStream(new File(&#34;pubring.asc&#34;)));
+            result = verifySignature(fileName, in, keyIn);
+
+        } finally {
+
+            IOUtils.closeQuietly(keyIn);
+            IOUtils.closeQuietly(in);
+        }
+        return result;
+    }
+
+    /**
+     * verifySignature
+     *
+     * @param fileName 待验签文件名
+     * @param in       asc文件流
+     * @param keyIn    公钥文件
+     * @author SunJun
+     */
+    private static boolean verifySignature(String fileName, InputStream in, InputStream keyIn) throws IOException,
+            PGPException {
+
+        PGPSignature sig;
+        InputStream dIn = null;
+        PGPSignatureList p3;
+        in = PGPUtil.getDecoderStream(in);
+        JcaPGPObjectFactory pgpFact = new JcaPGPObjectFactory(in);
+
+        Object o = pgpFact.nextObject();
+        if (o instanceof PGPCompressedData) {
+
+            PGPCompressedData c1 = (PGPCompressedData) o;
+            pgpFact = new JcaPGPObjectFactory(c1.getDataStream());
+            p3 = (PGPSignatureList) pgpFact.nextObject();
+
+        } else {
+
+            p3 = (PGPSignatureList) o;
+
+        }
+
+        PGPPublicKeyRingCollection pgpPubRingCollection =
+                new PGPPublicKeyRingCollection(PGPUtil.getDecoderStream(keyIn), new JcaKeyFingerprintCalculator());
+
+        try {
+
+            dIn = new BufferedInputStream(new FileInputStream(fileName));
+            sig = p3.get(0);
+
+            PGPPublicKey key = pgpPubRingCollection.getPublicKey(sig.getKeyID());
+            sig.init(new JcaPGPContentVerifierBuilderProvider().setProvider(&#34;BC&#34;), key);
+
+            int ch;
+            while ((ch = dIn.read()) &gt;= 0) {
+                sig.update((byte) ch);
+            }
+
+        } finally {
+            IOUtils.closeQuietly(dIn);
+        }
+
+        return sig.verify();
+    }
+
+    /**
+     * createSignature 文件签名
+     *
+     * @param inputFileName  待签名文件
+     * @param outputFileName 签名asc文件
+     * @param armor          是否生成ASSCII码形式签名文件
+     * @author SunJun
+     */
+    public static void createSignature(String inputFileName, String outputFileName, boolean armor) throws
+            IOException, PGPException {
+
+        InputStream keyIn = null;
+        OutputStream out = null;
+
+        try {
+
+            keyIn = new BufferedInputStream(new FileInputStream(new File(&#34;secring.asc&#34;)));
+            out = new BufferedOutputStream(new FileOutputStream(outputFileName));
+
+            createSignature(inputFileName, keyIn, out, &#34;private key password&#34;.toCharArray(), armor);
+
+        } finally {
+
+            IOUtils.closeQuietly(keyIn);
+            IOUtils.closeQuietly(out);
+        }
+    }
+
+    /**
+     * createSignature 文件签名
+     *
+     * @param fileName     待签名文件名
+     * @param keyIn        私钥文件流
+     * @param outputStream 签名asc文件
+     * @param pass         私钥密码
+     * @param armor        是否生成ASSCII码形式签名文件
+     * @author SunJun
+     */
+    private static void createSignature(String fileName, InputStream keyIn, OutputStream outputStream, char[] pass, boolean armor) throws
+            IOException, PGPException {
+
+        if (armor) {
+            outputStream = new ArmoredOutputStream(outputStream);
+        }
+
+        PGPSecretKey pgpSec = readSecretKey(keyIn);
+
+        PGPPrivateKey pgpPriKey = pgpSec.extractPrivateKey(new JcePBESecretKeyDecryptorBuilder().setProvider(&#34;BC&#34;).build(pass));
+        PGPSignatureGenerator sGen = new PGPSignatureGenerator(
+                new JcaPGPContentSignerBuilder(pgpSec.getPublicKey().getAlgorithm(), PGPUtil.SHA1).setProvider(&#34;BC&#34;));
+
+        sGen.init(PGPSignature.BINARY_DOCUMENT, pgpPriKey);
+
+        BCPGOutputStream bOut = new BCPGOutputStream(outputStream);
+        InputStream fIn = null;
+
+        try {
+
+            int ch;
+            fIn = new BufferedInputStream(new FileInputStream(fileName));
+
+            while ((ch = fIn.read()) &gt;= 0) {
+                sGen.update((byte) ch);
+            }
+            sGen.generate().encode(bOut);
+
+        } finally {
+
+            IOUtils.closeQuietly(fIn);
+            IOUtils.closeQuietly(bOut);
+        }
+    }
+
+    /**
+     * readSecretKey
+     *
+     * @param input 私钥文件流
+     * @return 私钥
+     */
+    private static PGPSecretKey readSecretKey(InputStream input) throws IOException, PGPException {
+
+        PGPSecretKeyRingCollection pgpSec = new PGPSecretKeyRingCollection(
+                PGPUtil.getDecoderStream(input), new JcaKeyFingerprintCalculator());
+        Iterator keyRingIterator = pgpSec.getKeyRings();
+
+        while (keyRingIterator.hasNext()) {
+
+            PGPSecretKeyRing keyRing = (PGPSecretKeyRing) keyRingIterator.next();
+            Iterator keyIterator = keyRing.getSecretKeys();
+
+            while (keyIterator.hasNext()) {
+
+                PGPSecretKey key = (PGPSecretKey) keyIterator.next();
+                if (key.isSigningKey()) {
+                    return key;
+                }
+            }
+        }
+
+        throw new IllegalArgumentException(&#34;Can&#39;t find signing key in key ring.&#34;);
+    }
+}
+</code></pre></article>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<script type="application/javascript" src='https://sjis.me/js/toc.js'></script>
+<link rel="stylesheet" href='https://sjis.me/css/toc.css' />
+
+
+  <div class="footer container-xl width-full p-responsive">
+  <div
+    class="position-relative d-flex flex-row-reverse flex-lg-row flex-wrap flex-lg-nowrap flex-justify-center flex-lg-justify-between flex-sm-items-center pt-6 pb-2 mt-6 f6 text-gray border-top border-gray-light ">
+    <a aria-label="Homepage" title="GitHub" class="footer-octicon d-none d-lg-block mr-lg-4" href="https://sjis.me/">
+      <svg height="24" class="octicon octicon-mark-github" viewBox="0 0 16 16" version="1.1" width="24">
+        <path fill-rule="evenodd"
+          d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z">
+        </path>
+      </svg>
+    </a>
+    <ul class="list-style-none d-flex flex-wrap col-12 flex-justify-center flex-lg-justify-between mb-2 mb-lg-0">
+      
+      <li class="mr-3 mr-lg-0">Theme by <a href='https://github.com/MeiK2333/github-style'>github-style</a></li>
+      
+    </ul>
+  </div>
+  <div class="d-flex flex-justify-center pb-6">
+    <span class="f6 text-gray-light"></span>
+  </div>
+
+
+</div>
+</body>
+
+<script type="application/javascript" src="https://sjis.me/js/github-style.js"></script>
+
+
+
+
+</html>

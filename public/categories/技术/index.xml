@@ -1,0 +1,772 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>技术 on SunJun&#39;s blog</title>
+    <link>https://sjis.me/categories/%E6%8A%80%E6%9C%AF/</link>
+    <description>Recent content in 技术 on SunJun&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Mon, 04 Nov 2019 16:50:00 +0800</lastBuildDate><atom:link href="https://sjis.me/categories/%E6%8A%80%E6%9C%AF/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>常见web服务攻击和防御手段</title>
+      <link>https://sjis.me/post/2019-11-04-common_means_web_attack/</link>
+      <pubDate>Mon, 04 Nov 2019 16:50:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2019-11-04-common_means_web_attack/</guid>
+      <description>常见web服务攻击和防御手段 XSS跨站脚本攻击 XSS (Cross-Site Scripting)，跨站脚本攻击，因为缩写和 CSS重叠，所以只能叫 XSS。 XSS 的原理是恶意攻击者往 Web 页面里插入恶意可执行网页脚本代码，当用户浏览该页之时，嵌入其中 Web 里面的脚本代码会被执行，从而可以达到攻击者盗 用户信息或其他侵犯用户安全隐私的目的。
+  反射型XSS：一般是通过给别人发送带有恶意脚本代码参数的 URL，当URL被打开时特有的恶意代码参数被HTML解析执行。
+防御手段：
+ 前端渲染数据都要从后端来 尽量不要从URL、document.referrer、document.forms等这些api获取数据并直接渲染 尽量不要使用 eval, new Function()，document.write()，document.writeln()等这些可以直接执行字符串的方法 如果必须要用的话也需要对传入的字符串进行转义 前端渲染的时候也需要对字符串做转义编码    持久性XSS：一般是通过留言、评论等这些可以和后端交互的功能将带有脚本的内容存到后端数据库的，当用户查询评论的时候就可能被查询出来渲染并执行 防御手段：
+  CSP：本质上也就是设置白名单的方式：
+ 设置 HTTP Header 中的 Content-Security-Policy  只允许加载本站资源: Content-Security-Policy: default-src &amp;lsquo;self&amp;rsquo; 只允许加载 HTTPS 协议图片: Content-Security-Policy: img-src https://* 允许加载任何来源框架: Content-Security-Policy: child-src &amp;rsquo;none&#39;   设置 meta 标签的方式    转义字符：转义用户输入的引号、尖括号、斜杆
+  HttpOnly Cookie：设置cookie时将属性设置成HttpOnly就可以避免cookie被恶意js获取</description>
+    </item>
+    
+    <item>
+      <title>Go源码阅读-私有库拉取问题</title>
+      <link>https://sjis.me/post/2019-10-29-go-primary-repo/</link>
+      <pubDate>Tue, 29 Oct 2019 14:24:30 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2019-10-29-go-primary-repo/</guid>
+      <description>go get拉取私有库报错 http拉取问题(&amp;gt;=1.6) go get github.com/sjatsh/transfo
+# cd .; git clone -- https://github.com/sjatsh/transfo /Users/jane/go/src/github.com/sjatsh/transfo Cloning into &amp;#39;/Users/jane/go/src/github.com/sjatsh/transfo&amp;#39;... fatal: could not read Username for &amp;#39;https://github.com&amp;#39;: terminal prompts disabled package github.com/sjatsh/transfo: exit status 128 我们刚开始学习golang的时候我们需要go get拉取某个私有库的时候经常就会遇到类似的问题，这个问题的关键在于 terminal prompts disabled 这个错误信息，问题是由于http拉取私有仓库时需要用户名密码，但是git却没有提示输入用户名密码，直接看源码：
+参见源码97行： go/get.go at release-branch.go1.6 · golang/go · GitHub
+func runGet(cmd *base.Command, args []string) { // 这段代码默认设置 GIT_TERMINAL_PROMPT = 0  if os.Getenv(&amp;#34;GIT_TERMINAL_PROMPT&amp;#34;) == &amp;#34;&amp;#34; { os.Setenv(&amp;#34;GIT_TERMINAL_PROMPT&amp;#34;, &amp;#34;0&amp;#34;) } } os.Setenv(&amp;quot;GIT_TERMINAL_PROMPT&amp;quot;, &amp;quot;0&amp;quot;) 这行标识关闭git命令行提示 ，也就导致了上面提到的terminal prompts disabled错误。</description>
+    </item>
+    
+    <item>
+      <title>Rabin-Karp在golang中的实现</title>
+      <link>https://sjis.me/post/2019-09-26-rabin-karp/</link>
+      <pubDate>Thu, 26 Sep 2019 12:01:30 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2019-09-26-rabin-karp/</guid>
+      <description>简介 Rabin-Karp字符串快速查找算法和FNV hash算法是golang中strings包中字符串查所用到的具体算法，算法的核心就在于循环hash，而 FNV则是散列方法的具体算法实现。
+算法思想 Rabin-Karp算法思想：
+ 假设待匹配字符串长度M，目标字符串长度N（N&amp;gt;M） 首先计算待匹配字符串hash，计算目标字符串前M个字符hash 比较前两个hash值，比较次数N-M+1  若hash不相等，继续计算目标字符串下一个长度为M的hash并继续循环比较 若hash相等则再次判断字符串是否相等已确保正确性    FNV hash：
+将字符串看作是字符串长度的整数，这个数的进制是一个质数。计算出来结果之后，按照哈希的范围求余数得到结果。
+其中不同机制对应质数分别是：
+32 bit FNV_prime = 224 + 28 + 0x93 = 16777619 64 bit FNV_prime = 240 + 28 + 0xb3 = 1099511628211 128 bit FNV_prime = 288 + 28 + 0x3b = 309485009821345068724781371 256 bit FNV_prime = 2168 + 28 + 0x63 = 374144419156711147060143317175368453031918731002211 512 bit FNV_prime = 2344 + 28 + 0x57 = 35835915874844867368919076489095108449946327955754392558399825615420669938882575 126094039892345713852759 1024 bit FNV_prime = 2680 + 28 + 0x8d = 50164565101131186554345988110352789550307653454047907443030175238311120551081474 51509157692220295382716162651878526895249385292291816524375083746691371804094271 873160484737966720260389217684476157468082573 以上这几个数都是质数（哈希的理论基石，质数分辨定理)，简单地说就是：n个不同的质数可以“分辨”的连续整数的个数和他们的乘积相等。“分辨”就是指这些连续的整数不可能有完全相同的余数序列。证明详见</description>
+    </item>
+    
+    <item>
+      <title>go平滑重启选型和项目实践</title>
+      <link>https://sjis.me/post/2019-09-17-graceful-reload/</link>
+      <pubDate>Tue, 17 Sep 2019 21:38:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2019-09-17-graceful-reload/</guid>
+      <description>什么是平滑重启 当线上代码需要更新时,我们平时一般的做法需要先关闭服务然后再重启服务. 这时线上可能存在大量正在处理的请求, 这时如果我们直接关闭服务会造成请求全部 中断, 影响用户体验; 在重启重新提供服务之前, 新请求进来也会502. 这时就出现两个需要解决的问题:
+ 老服务正在处理的请求必须处理完才能退出(优雅退出) 新进来的请求需要正常处理,服务不能中断(平滑重启)  本文主要结合linux和Golang中相关实现来介绍如何选型与实践过程.
+优雅退出 在实现优雅重启之前首先需要解决的一个问题是如何优雅退出：
+我们知道在go 1.8.x后，golang在http里加入了shutdown方法，用来控制优雅退出。
+社区里不少http graceful动态重启，平滑重启的库，大多是基于http.shutdown做的。
+http shutdown 源码分析 先来看下http shutdown的主方法实现逻辑。用atomic来做退出标记的状态，然后关闭各种的资源，然后一直阻塞的等待无空闲连接，每500ms轮询一次。
+var shutdownPollInterval = 500 * time.Millisecond func (srv *Server) Shutdown(ctx context.Context) error { // 标记退出的状态 atomic.StoreInt32(&amp;amp;srv.inShutdown, 1) srv.mu.Lock() // 关闭listen fd，新连接无法建立。 lnerr := srv.closeListenersLocked() // 把server.go的done chan给close掉，通知等待的worekr退出 srv.closeDoneChanLocked() // 执行回调方法，我们可以注册shutdown的回调方法 for _, f := range srv.onShutdown { go f() } // 每500ms来检查下，是否没有空闲的连接了，或者监听上游传递的ctx上下文。 ticker := time.NewTicker(shutdownPollInterval) defer ticker.</description>
+    </item>
+    
+    <item>
+      <title>互联网编年史-sputnik</title>
+      <link>https://sjis.me/post/2018-10-09-sputnik/</link>
+      <pubDate>Tue, 09 Oct 2018 00:00:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2018-10-09-sputnik/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;第一颗人造卫星的发射成功，直接导致了冷战时期美俄两国的太空竞赛&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt; 1957年苏联发射了人类第一颗人造卫星&amp;quot;Sputnik&amp;quot;。&lt;/p&gt;
+&lt;p&gt; 在Sputnik进入太空之后的60年间，人造卫星在&lt;code&gt;科学、军事和民生&lt;/code&gt;等各个方面都获得了极其广泛的应用，对人类&lt;code&gt;通讯方式带来了颠覆性的影响，揭开并深化了冷战，催生了互联网&lt;/code&gt;，
+进而彻底改变了人们认识自我、观看世界的方式。
+&lt;img src=&#34;https://olef5l6y5.qnssl.com/sptnik.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>git workflow</title>
+      <link>https://sjis.me/post/2018-08-21-git_workflow/</link>
+      <pubDate>Tue, 21 Aug 2018 17:30:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2018-08-21-git_workflow/</guid>
+      <description>&lt;h3 id=&#34;git与svn的比较&#34;&gt;Git与SVN的比较&lt;/h3&gt;
+&lt;h4 id=&#34;原理上&#34;&gt;原理上&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;Git直接记录文件快照，SVN每次提交记录哪些文件更新更新了哪些行&lt;/li&gt;
+&lt;li&gt;Git有本地仓库，SVN没有本地仓库&lt;/li&gt;
+&lt;li&gt;Git大多数是本地操作，SVN大多数操作需要联网&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;操作上&#34;&gt;操作上&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;Git先提交到本地仓库然后推送到远程仓库，SVN直接推送到远程仓库&lt;/li&gt;
+&lt;li&gt;Git有各种&amp;quot;反悔&amp;quot;指令，SVN没有&lt;/li&gt;
+&lt;li&gt;Git有真正的branch，而SVN只是工作空间的副本&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+    <item>
+      <title>关于TCP那些事（二）</title>
+      <link>https://sjis.me/post/2018-08-20-something_about_tcp2/</link>
+      <pubDate>Mon, 20 Aug 2018 01:20:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2018-08-20-something_about_tcp2/</guid>
+      <description>&lt;h3 id=&#34;tcp重传机制&#34;&gt;TCP重传机制&lt;/h3&gt;
+&lt;p&gt;TCP确认机制属于累积确认，接收端给发送端的Ack确认只会确认最后一个连续的包，&lt;strong&gt;SeqNum和Ack是以字节数为单位，所以ack的时候，不能跳着确认，只能确认最大的连续收到的包，
+不然发送端就以为之前的都收到了&lt;/strong&gt;。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>关于TCP那些事（一）</title>
+      <link>https://sjis.me/post/2018-08-19-something_about_tcp1/</link>
+      <pubDate>Sun, 19 Aug 2018 23:20:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2018-08-19-something_about_tcp1/</guid>
+      <description>&lt;h3 id=&#34;tcp头格式&#34;&gt;TCP头格式&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&#34;https://olef5l6y5.qnssl.com/tcp_head.png&#34; alt=&#34;&#34;&gt;
+&lt;img src=&#34;https://olef5l6y5.qnssl.com/tcp_options.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;需要注意的几点：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;TCP包没有IP地址，那是IP层的事。只有源端口和目标端口。&lt;/li&gt;
+&lt;li&gt;一个TCP连接需要四个元组来表示是同一个连接（src_ip, src_port, dst_ip, dst_port）准确说是五元组，还有一个是协议。但因为这里只是说TCP协议，所以，这里我只说四元组。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Sequence Number&lt;/strong&gt;是包的序号，用来解决网络包乱序（reordering）问题。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Acknowledgement Number&lt;/strong&gt;就是ACK——用于确认收到，用来解决不丢包的问题。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Window又叫Advertised-Window&lt;/strong&gt;，也就是著名的滑动窗口（Sliding Window），&lt;strong&gt;用于解决流控&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;TCP Flag&lt;/strong&gt;，包类型，&lt;strong&gt;用于控制TCP状态机&lt;/strong&gt;。&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+    <item>
+      <title>突破算法之-排列组合</title>
+      <link>https://sjis.me/post/2018-08-19-permutation_algorithms/</link>
+      <pubDate>Sun, 19 Aug 2018 02:00:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2018-08-19-permutation_algorithms/</guid>
+      <description>&lt;h3 id=&#34;算法原理&#34;&gt;算法原理&lt;/h3&gt;
+&lt;p&gt;思路是开一个数组，其下标表示1到n个数，数组元素的值为1表示其下标代表的数被选中，为0则没选中。  &lt;br&gt;
+首先初始化，将数组前m个元素置1，表示第一个组合为前m个数。然后从左到右扫描数组元素值的&amp;quot;10&amp;quot;组合，找到第一个&amp;quot;10&amp;quot;组合后将其变为
+&amp;ldquo;01&amp;quot;组合，同时将其左边的所有&amp;quot;1&amp;quot;全部移动到数组的最左端。当第一个&amp;quot;1&amp;quot;移动到数组的m-n的位置，即n个&amp;quot;1&amp;quot;全部移动到最右端时，就得到了最后一个组合。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>突破算法之-快速排序</title>
+      <link>https://sjis.me/post/2018-08-1-quick_sort/</link>
+      <pubDate>Sun, 19 Aug 2018 01:30:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2018-08-1-quick_sort/</guid>
+      <description>&lt;h3 id=&#34;算法原理&#34;&gt;算法原理&lt;/h3&gt;
+&lt;p&gt;快速排序是图灵奖得主&lt;!-- raw HTML omitted --&gt;C.R.A. Hoare&lt;!-- raw HTML omitted --&gt;与1960年提出的一种
+划分交换排序，它采用了一种分治策略。&lt;br&gt;
+分治法的基本思想是：将原问题分解为若干个规模更小但结构与原问题相似的子问题。递归地解这些子问题，然后将这些子问题的解组合为原问题的解。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>突破算法之-二分插入排序</title>
+      <link>https://sjis.me/post/2018-08-19-binary_insertion_sort/</link>
+      <pubDate>Sun, 19 Aug 2018 00:00:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2018-08-19-binary_insertion_sort/</guid>
+      <description>&lt;h3 id=&#34;二分插入排序原理&#34;&gt;二分插入排序原理&lt;/h3&gt;
+&lt;p&gt;二分法是对直接插入的改进，由直接插入排序的循环遍历找出插入点改为二分法找出插入点，时间复杂度O(nlogn)。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>突破算法之-希尔排序</title>
+      <link>https://sjis.me/post/2018-08-18-shell_sort/</link>
+      <pubDate>Sat, 18 Aug 2018 20:24:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2018-08-18-shell_sort/</guid>
+      <description>&lt;h3 id=&#34;算法要点&#34;&gt;算法要点&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;希尔(Shell)排序又称为缩小增量排序，它是一种插入排序。它是对直接插入排序算法的一种优化。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;该方法因DL．Shell于1959年提出而得名。&lt;/p&gt;
+&lt;h3 id=&#34;算法思想&#34;&gt;算法思想&lt;/h3&gt;
+&lt;p&gt;它的作法不是每次一个元素挨一个元素的比较。而是初期选用大跨步（增量较大）间隔比较，使记录跳跃式接近它的排序位置；
+然后增量缩小；最后增量为 1 ，这样记录移动次数大大减少，提高排序效率。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>突破算法之-直接插入排序</title>
+      <link>https://sjis.me/post/2018-08-17-insertion_sort/</link>
+      <pubDate>Fri, 17 Aug 2018 14:30:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2018-08-17-insertion_sort/</guid>
+      <description>&lt;h3 id=&#34;直接插入排序原理&#34;&gt;直接插入排序原理&lt;/h3&gt;
+&lt;p&gt;插入排序与选择排序最大的不同在于维护有序列的方式不同：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;选择排序通过从无序列中找出最大或最小值放在有序列尾，直到循环到最后一个元素整个数组有序&lt;/li&gt;
+&lt;li&gt;插入排序是依次把无序列中元素从有序列尾开始比较插入第一个比它小的或者比它大的元素后面，直到循环到最后一个元素整个序列有序&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;https://olef5l6y5.qnssl.com/insertion_sort.gif&#34; alt=&#34;&#34;&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>突破算法之-冒泡排序</title>
+      <link>https://sjis.me/post/2018-08-17-bubble_sort/</link>
+      <pubDate>Fri, 17 Aug 2018 13:30:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2018-08-17-bubble_sort/</guid>
+      <description>&lt;h3 id=&#34;冒泡排序原理&#34;&gt;冒泡排序原理&lt;/h3&gt;
+&lt;p&gt;对数组内所有n个元素依次进行比较和交换位置，较大的元素往上浮较小的元素往下沉，外层进行n-1次循环后数组会从小到大排好序，
+时间复杂度O(n^2)。&lt;img src=&#34;https://olef5l6y5.qnssl.com/bubble_sort.gif&#34; alt=&#34;&#34;&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>HTTP幂等性</title>
+      <link>https://sjis.me/post/2018-07-16-http_idempotence/</link>
+      <pubDate>Mon, 16 Jul 2018 00:00:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2018-07-16-http_idempotence/</guid>
+      <description>&lt;p&gt;&lt;!-- raw HTML omitted --&gt;原文&lt;!-- raw HTML omitted --&gt;&lt;/p&gt;
+&lt;p&gt;HTTP协议是一种分布式的面向资源的网络应用层协议，Web API如此流行很大程度上应归功于简单有效的HTTP协议。然而，正如简单的Java语言并不意味着高质量的Java程序，
+简单的HTTP协议也不意味着高质量的Web API。要想设计出高质量的Web API，还需要深入理解分布式系统及HTTP协议的特性。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Java类加载器</title>
+      <link>https://sjis.me/post/2018-04-25-java_classloader/</link>
+      <pubDate>Wed, 25 Apr 2018 00:00:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2018-04-25-java_classloader/</guid>
+      <description>&lt;h3 id=&#34;基本概念&#34;&gt;基本概念&lt;/h3&gt;
+&lt;p&gt;最初为了满足Java Applet的需要而被开发出来的，Java Applet 需要从远程下载Java类到浏览器执行，现在Web容器和OSGi中得到了广泛的使用。类加载器负责读取 Java 字节代码，并转换
+成 java.lang.Class 类的实例。每个 java.lang.Class 实例用来表示一个Java类，通过 newInstance() 创建该类对象，newInstance()只能调用无参构造器。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Java 内存可见性与指令重排</title>
+      <link>https://sjis.me/post/2018-04-20-java_volatile/</link>
+      <pubDate>Fri, 20 Apr 2018 00:00:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2018-04-20-java_volatile/</guid>
+      <description>&lt;h3 id=&#34;内存可见性的问题&#34;&gt;内存可见性的问题&lt;/h3&gt;
+&lt;p&gt;多线程系统中共享变量在主存，线程保存一份变量的副本，某个线程对共享变量的改动通过改动变量副本然后同步到主存中的共享变量，但是其他线程保存的可能还是之前的变量副本，此时可能
+就会存在问题。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>mysql8.0.11精简版</title>
+      <link>https://sjis.me/post/2018-04-20-mysql_8011/</link>
+      <pubDate>Fri, 20 Apr 2018 00:00:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2018-04-20-mysql_8011/</guid>
+      <description>mysql8.0.11精简版 仅供学习交流：百度网盘地址密码：8g3h</description>
+    </item>
+    
+    <item>
+      <title>mysql bin/redo log顺序一致性问题</title>
+      <link>https://sjis.me/post/2018-04-13-mysql_tow_phase_commit/</link>
+      <pubDate>Fri, 13 Apr 2018 00:00:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2018-04-13-mysql_tow_phase_commit/</guid>
+      <description>&lt;h3 id=&#34;为什么mysql既有bin-log也有redo-log&#34;&gt;为什么mysql既有bin log也有redo log&lt;/h3&gt;
+&lt;p&gt;bin log是属于mysql server层的log，主要是用来做&lt;strong&gt;主从复制和即时点恢复&lt;/strong&gt;时使用的，&lt;strong&gt;redo log是InnoDB存储引擎层的，用来保证事务安全&lt;/strong&gt;。
+不管用哪种存储引擎都有bin log，而redo log只有InnoDB有，这是由mysql体系架构决定的。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>mysql clustered index</title>
+      <link>https://sjis.me/post/2018-04-12-mysql_clustered_index/</link>
+      <pubDate>Thu, 12 Apr 2018 00:00:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2018-04-12-mysql_clustered_index/</guid>
+      <description>&lt;h3 id=&#34;mysql聚集索引的理解&#34;&gt;mysql聚集索引的理解&lt;/h3&gt;
+&lt;p&gt;InnoDB使用聚集索引存储数据，到底什么是聚集索引，聚集索引直接定义了表中数据的真实的物理存储顺序。&lt;strong&gt;聚集索引就像一个电话簿，按照姓氏排序，
+并且电话号码紧跟着后面&lt;/strong&gt;。一个表有且只有一个聚集索引，默认主键作为聚集索引，没有主键则以第一个唯一非空键作为聚集索引，如果也没有则InnoDB
+会生成一个隐藏id作为聚集索引。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>mysql undo log与MVCC的实现原理</title>
+      <link>https://sjis.me/post/2018-04-12-mysql_undo_log_mvcc/</link>
+      <pubDate>Thu, 12 Apr 2018 00:00:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2018-04-12-mysql_undo_log_mvcc/</guid>
+      <description>&lt;p&gt;###mysql架构&lt;/p&gt;
+&lt;p&gt;概念上可以分为四层：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;接入层：不同客户端通过mysql协议与mysql连接通讯，接入层进行权限验证、连接池管理线程管理等。&lt;/li&gt;
+&lt;li&gt;服务层：sql解析器、优化器、数据缓冲、缓存等。&lt;/li&gt;
+&lt;li&gt;存储引擎：常用的&lt;code&gt;MyISAM、InnoDB&lt;/code&gt;等&lt;a href=&#34;https://my.oschina.net/RubinWan/blog/87031&#34;&gt;存储引擎&lt;/a&gt;。&lt;/li&gt;
+&lt;li&gt;文件系统：保存数据、索引、日志等。&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+    <item>
+      <title>mysql InnoDB locks</title>
+      <link>https://sjis.me/post/2018-04-11-mysql_row_lock/</link>
+      <pubDate>Wed, 11 Apr 2018 00:00:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2018-04-11-mysql_row_lock/</guid>
+      <description>&lt;p&gt;###InnoDB的锁机制&lt;/p&gt;
+&lt;p&gt;数据库锁为了支持更好的并发，提供数据的一致性和完整性。锁的类型有：共享锁（S）、排他锁（X）、意向共享（IS）、意向排他（IX）。为了更好的
+并发，InnoDB通过MVCC提供非锁定读：不等待行上的锁释放，读取行的一个快照。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>mysql transaction isolation</title>
+      <link>https://sjis.me/post/2018-04-09-mysql_transaction_isolation/</link>
+      <pubDate>Mon, 09 Apr 2018 00:00:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2018-04-09-mysql_transaction_isolation/</guid>
+      <description>&lt;p&gt;###何为隔离级别&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;隔离级别决定事务间的可见程度，一个事务的修改结果在什么时候能被其他事务看到&lt;/strong&gt;，由此SQL1992规范对隔离性定义了不同的&lt;strong&gt;隔离级别&lt;/strong&gt;用来划
+分这个可见范围。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>gateway framework</title>
+      <link>https://sjis.me/post/2018-04-07-gateway_framework/</link>
+      <pubDate>Sat, 07 Apr 2018 00:00:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2018-04-07-gateway_framework/</guid>
+      <description>&lt;h3 id=&#34;gateway-framework&#34;&gt;gateway framework&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&#34;https://olef5l6y5.qnssl.com/2018040713400.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>hsts preload</title>
+      <link>https://sjis.me/post/2018-04-07-hsts_preload_list/</link>
+      <pubDate>Sat, 07 Apr 2018 00:00:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2018-04-07-hsts_preload_list/</guid>
+      <description>&lt;h3 id=&#34;服务器https跳转的问题&#34;&gt;服务器https跳转的问题&lt;/h3&gt;
+&lt;p&gt;一般我们的站点强制跳转https都是通过nginx、caddy进行http的强制https跳转。这个过程就可能存在问题，我们在浏览器直接输入域名example.com
+的时候发起的是一个明文的http请求很容易被攻击者拦截并定向到钓鱼网站&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>clion wsl</title>
+      <link>https://sjis.me/post/2018-04-06-clion_wsl/</link>
+      <pubDate>Fri, 06 Apr 2018 00:00:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2018-04-06-clion_wsl/</guid>
+      <description>&lt;h3 id=&#34;clion-wsl&#34;&gt;clion wsl&lt;/h3&gt;
+&lt;p&gt;clion新版开始支持wsl，这样就可以很方便的直接在windows上编译linux特性的C代码。&lt;/p&gt;
+&lt;h3 id=&#34;bash-on-windows&#34;&gt;Bash on Windows&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;在控制面板\程序\程序和功能 启用或关闭 Windows 功能中勾选 适用于 Linux 的 Windows 子系统&lt;/li&gt;
+&lt;li&gt;在设置中打开开发人员模式&lt;/li&gt;
+&lt;li&gt;重启后powershell输入&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+    <item>
+      <title>redis sentinel/cluster</title>
+      <link>https://sjis.me/post/2018-04-04-redis_sentinel_cluster/</link>
+      <pubDate>Wed, 04 Apr 2018 00:00:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2018-04-04-redis_sentinel_cluster/</guid>
+      <description>&lt;h3 id=&#34;单例模式&#34;&gt;单例模式&lt;/h3&gt;
+&lt;p&gt;redis单例存在的问题：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;单点故障&lt;/li&gt;
+&lt;li&gt;数据备份&lt;/li&gt;
+&lt;li&gt;数据量大了以后的性能问题&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+    <item>
+      <title>why codis not redis cluster</title>
+      <link>https://sjis.me/post/2018-04-04-choose_codis_not_redis_cluster/</link>
+      <pubDate>Wed, 04 Apr 2018 00:00:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2018-04-04-choose_codis_not_redis_cluster/</guid>
+      <description>&lt;h3 id=&#34;why-not-redis-cluster&#34;&gt;why not redis cluster&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;无中心的设计，很难把程序写对&lt;/li&gt;
+&lt;li&gt;代码有点吓人，clusterProcessPacket有426行，大脑很难处理到所有的状态切换&lt;/li&gt;
+&lt;li&gt;迟迟没有正式版，等了4年之久&lt;/li&gt;
+&lt;li&gt;缺乏Best Practise，还没人写一个Redis Cluster的若干条注意事项&lt;/li&gt;
+&lt;li&gt;这个系统高度耦合，升级困难&lt;/li&gt;
+&lt;li&gt;如果slot所在的redis master、slave同时挂掉，整个集群不可用。codis是否一样?待验证&amp;hellip;&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+    <item>
+      <title>值传递和引用传递</title>
+      <link>https://sjis.me/post/2018-04-03-pass_by_value_and_reference/</link>
+      <pubDate>Tue, 03 Apr 2018 00:00:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2018-04-03-pass_by_value_and_reference/</guid>
+      <description>&lt;h3 id=&#34;到底什么是值传递和引用传递&#34;&gt;到底什么是值传递和引用传递&lt;/h3&gt;
+&lt;p&gt;基础中的基础，首先不要纠结字面意思，Java中（byte、short、int、long、float、double）、字符型（char）、布尔型（boolean）这些基本类型数据直接保存在栈中，而类、
+接口、数组数据是保存在堆中，栈只是保存一个指向堆内存的指针。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>B-Tree和B&#43;Tree</title>
+      <link>https://sjis.me/post/2018-04-02-b-tree-b&#43;&#43;tree/</link>
+      <pubDate>Mon, 02 Apr 2018 00:00:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2018-04-02-b-tree-b&#43;&#43;tree/</guid>
+      <description>&lt;p&gt;大部分数据库系统及文件系统都采用B-Tree或其变种B+Tree作为索引结构，为什么B-Tree和B+Tree在被如此广泛用于索引？先从数据结构的角度来分析。&lt;/p&gt;
+&lt;h3 id=&#34;几种常见的树结构&#34;&gt;几种常见的树结构&lt;/h3&gt;
+&lt;p&gt;二叉查找树（Binary Search Tree），平衡二叉查找树（Balanced Binary Search Tree），红黑树(Red-Black Tree )，B-tree/B+-tree/ B*-tree (B~Tree)。前三都是二叉查找树，
+查找时间复杂度O(log2N)与树的深度有关，降低深度自然也能提高查询效率。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Java HashMap</title>
+      <link>https://sjis.me/post/2018-04-02-hash_map/</link>
+      <pubDate>Mon, 02 Apr 2018 00:00:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2018-04-02-hash_map/</guid>
+      <description>&lt;h3 id=&#34;java-hashmap的本质&#34;&gt;Java HashMap的本质&lt;/h3&gt;
+&lt;p&gt;HashMap的本质其实就是数组加链表。&lt;/p&gt;
+&lt;p&gt;它根据键的hashCode值存储数据，大多数情况下可以直接定位到它的值，因而具有很快的访问速度，但遍历顺序却是不确定的。 HashMap最多只允许一条记录的键为null，允许多条记录的值为null。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>成长曲线</title>
+      <link>https://sjis.me/post/2018-03-28-grow_up/</link>
+      <pubDate>Wed, 28 Mar 2018 00:00:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2018-03-28-grow_up/</guid>
+      <description>&lt;h3 id=&#34;技术成长之路&#34;&gt;技术成长之路&lt;/h3&gt;
+&lt;p&gt;15年那会大四即将毕业，面临着工作问题。由于并不是什么好学校，来校内招人的公司基本上是一些销售的活，偶有几个技术岗位也是走个过场而已，并没有什么好的机会。后来
+和同学一起参加了java培训，或许并不是为了希望学习到多少东西而报名，而是为了能够有个好的机会。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>mysql index</title>
+      <link>https://sjis.me/post/2018-03-24-mysql_index/</link>
+      <pubDate>Sat, 24 Mar 2018 00:00:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2018-03-24-mysql_index/</guid>
+      <description>&lt;h3 id=&#34;什么是数据库索引mysql&#34;&gt;什么是数据库索引（Mysql）&lt;/h3&gt;
+&lt;p&gt;用了这么久Mysql，Mysql索引相关知识点却不太清楚，可以说匮乏。正好看到有面试问道，稍微看看和整理一下。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>CloudXNS DDNS</title>
+      <link>https://sjis.me/post/2018-03-18-cloudxns_ddns/</link>
+      <pubDate>Sun, 18 Mar 2018 00:00:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2018-03-18-cloudxns_ddns/</guid>
+      <description>&lt;h3 id=&#34;ddns&#34;&gt;DDNS&lt;/h3&gt;
+&lt;p&gt;Dynamic Domain Name Server(动态域名服务)，DDNS是将用户的动态IP地址映射到一个固定的域名解析服务上，用户每次连接网络的时候客户端程序
+就会通过信息传递把该主机的动态IP地址传送给位于服务商主机上的服务器程序，服务器程序负责提供DNS服务并实现动态域名解析。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>let&#39;s encrypt</title>
+      <link>https://sjis.me/post/2018-03-18-lets_encrypt/</link>
+      <pubDate>Sun, 18 Mar 2018 00:00:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2018-03-18-lets_encrypt/</guid>
+      <description>&lt;h3 id=&#34;获取lets-encrypt免费泛域名证书&#34;&gt;获取let&amp;rsquo;s encrypt免费泛域名证书&lt;/h3&gt;
+&lt;p&gt;首先DNS需要支持CAA，我用的CloudXNS，添加CAA记录记录值&lt;code&gt;0 issue letsencrypt.org&lt;/code&gt;,vps&lt;code&gt;curl https://get.acme.sh|sh&lt;/code&gt;,
+添加环境变量&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>ubuntu nat</title>
+      <link>https://sjis.me/post/2018-02-01-ubuntu_nat/</link>
+      <pubDate>Thu, 01 Feb 2018 00:00:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2018-02-01-ubuntu_nat/</guid>
+      <description>&lt;h3 id=&#34;场景&#34;&gt;场景&lt;/h3&gt;
+&lt;p&gt;公司iBox（ubuntu 16.04系统）需要与机床连接实现实现业务，iBox本身只有两个网口，需要一个口连接厂房内网路由，一个口与机床直连，机床本身需要能够连接外网。&lt;br&gt;
+这时候就需要iBox实现nat转发并实现路由功能。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>windows ICS</title>
+      <link>https://sjis.me/post/2018-02-01-win_ics/</link>
+      <pubDate>Thu, 01 Feb 2018 00:00:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2018-02-01-win_ics/</guid>
+      <description>&lt;h3 id=&#34;什么是windows-ics&#34;&gt;什么是windows ICS&lt;/h3&gt;
+&lt;p&gt;全称windows internet connect sharing,用于在电脑两个网卡之间共享网络，让windows主机成实现一个
+简单的路由功能。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>nginx request copy</title>
+      <link>https://sjis.me/post/2018-01-29-nginx_http_mirro/</link>
+      <pubDate>Mon, 29 Jan 2018 00:00:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2018-01-29-nginx_http_mirro/</guid>
+      <description>&lt;h3 id=&#34;问题&#34;&gt;问题&lt;/h3&gt;
+&lt;p&gt;目前公司前端项目的图片文件全部是通过请求后台获取token接口获取七牛上传token，然后前端直接上传七牛。这个机制本身不存在问题，问题在于
+公司使用了一个第三方授权服务器，这个服务器需要下载拿到用户上传的图片。问题来了，这个服务器当初部署在内网，如果需要它访问到上传图片，需要
+将文件在用户上传后再备份到一个我们自己的服务器。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>openpgp签名与验签</title>
+      <link>https://sjis.me/post/2018-01-23-go_java_signature_check/</link>
+      <pubDate>Tue, 23 Jan 2018 00:00:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2018-01-23-go_java_signature_check/</guid>
+      <description>&lt;h4 id=&#34;存在的问题&#34;&gt;存在的问题&lt;/h4&gt;
+&lt;p&gt;目前每次程序版本发布需要手动gpg签名并打包发布，存在的问题：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;每次都需要人工手动使用gpg签名&lt;/li&gt;
+&lt;li&gt;如果如果需要签名发布的app变多也会增加很多重复劳动&lt;/li&gt;
+&lt;li&gt;其他项目或应用文件签名下发需要一个统一的接口&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+    <item>
+      <title>Go项目实战总结</title>
+      <link>https://sjis.me/post/2017-09-25-start_golang/</link>
+      <pubDate>Mon, 25 Sep 2017 00:00:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2017-09-25-start_golang/</guid>
+      <description>&lt;h3 id=&#34;gopath&#34;&gt;GOPATH&lt;/h3&gt;
+&lt;p&gt;go get、go install等命令都会用到gopath，gopath告诉go命令和和其他相关工具到哪找安装在你系统上的go包。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>七牛文件上传</title>
+      <link>https://sjis.me/post/2017-07-10-qiniu_upload/</link>
+      <pubDate>Mon, 10 Jul 2017 00:00:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2017-07-10-qiniu_upload/</guid>
+      <description>&lt;h4 id=&#34;基本的环境搭建&#34;&gt;基本的环境搭建&lt;/h4&gt;
+&lt;p&gt;这里使用的是七牛的Java sdk，框架用的是spring boot，至于spring boot的基本框架搭建就不说了。
+maven引入依赖&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;&amp;lt;dependency&amp;gt;
+    &amp;lt;groupId&amp;gt;com.qiniu&amp;lt;/groupId&amp;gt;
+    &amp;lt;artifactId&amp;gt;qiniu-java-sdk&amp;lt;/artifactId&amp;gt;
+    &amp;lt;version&amp;gt;[7.0.0, 7.2.99]&amp;lt;/version&amp;gt;
+&amp;lt;/dependency&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;</description>
+    </item>
+    
+    <item>
+      <title>Nginx epoll事件驱动</title>
+      <link>https://sjis.me/post/2017-04-05-nginx_epoll/</link>
+      <pubDate>Wed, 05 Apr 2017 00:00:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2017-04-05-nginx_epoll/</guid>
+      <description>&lt;p&gt;###Linux IO模式&lt;/p&gt;
+&lt;p&gt;在了解Nginx事件驱动机制之前首先我们需要知道的是Linux的IO模式，之所以需要了解Linux的IO模式是应为Nginx正是通过它实现的&amp;quot;非阻塞IO&amp;quot;与高并发。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>nginx lua预编译</title>
+      <link>https://sjis.me/post/2017-04-0-precompile_lua_module/</link>
+      <pubDate>Wed, 05 Apr 2017 00:00:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2017-04-0-precompile_lua_module/</guid>
+      <description>&lt;h4 id=&#34;前景提要&#34;&gt;前景提要&lt;/h4&gt;
+&lt;p&gt;前段时间nginx新版1.11.11更新之后&lt;code&gt;nginx_http_connection_t&lt;/code&gt;结构体中的&lt;code&gt;ngx_buf_t **busy&lt;/code&gt;从二级指针改为了&lt;code&gt;ngx_chain_t *busy&lt;/code&gt;链表。
+如何修改见&lt;a href=&#34;https://sunsblog.cn/2017/03/24/buildNewNginxError/&#34;&gt;之前的blog&lt;/a&gt;。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>nginx-1.11.11模块编译报错解决</title>
+      <link>https://sjis.me/post/2017-03-24-build_nginx_error/</link>
+      <pubDate>Fri, 24 Mar 2017 00:00:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2017-03-24-build_nginx_error/</guid>
+      <description>&lt;h4 id=&#34;nginx最新版11111编译报错&#34;&gt;Nginx最新版1.11.11编译报错&lt;/h4&gt;
+&lt;p&gt;最近nginx官网更新了nginx的最新版nginx-1.11.11，于是下载下来想要搭在新买的vps上。
+但是发现在了一个问题，在编译添加openresty外部模块lua-nginx-module和echo-nginx-module时
+报错，报错如下：&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>在搬瓦工VPS上搭建VPN服务</title>
+      <link>https://sjis.me/post/2017-03-24-build_vpn_in_vps/</link>
+      <pubDate>Fri, 24 Mar 2017 00:00:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2017-03-24-build_vpn_in_vps/</guid>
+      <description>&lt;h3 id=&#34;搭建shadowsocks服务&#34;&gt;搭建Shadowsocks服务&lt;/h3&gt;
+&lt;h4 id=&#34;安装组件&#34;&gt;安装组件&lt;/h4&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$ yum install m2crypto python-setuptools
+$ easy_install pip
+$ pip install shadowsocks
+&lt;/code&gt;&lt;/pre&gt;</description>
+    </item>
+    
+    <item>
+      <title>lua脚本解析webhooks实现自动部署</title>
+      <link>https://sjis.me/post/2017-02-27-deploy_blog_by_lua/</link>
+      <pubDate>Mon, 27 Feb 2017 00:00:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2017-02-27-deploy_blog_by_lua/</guid>
+      <description>&lt;h3 id=&#34;码云配置webhooks&#34;&gt;码云配置webhooks&lt;/h3&gt;
+&lt;p&gt;实现自动部署的方式有很多，可以把项目放在github用github的webhooks，但是github只能创建公开项目私有项目是要钱的。也可以使用一种相对麻烦的方式，可以在vps上建一个git仓库每次提交到vps上之后触发hook去更新blog，这种方法相对麻烦而且vps
+上的项目容易丢失。所以最后选择了码云，在码云上初始化一个blog项目，之后配置一个webhooks并且跑配置密码，防止url被恶意调用。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>突破算法之-选择排序</title>
+      <link>https://sjis.me/post/2016-10-14-select_sort/</link>
+      <pubDate>Fri, 14 Oct 2016 14:00:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2016-10-14-select_sort/</guid>
+      <description>&lt;h3 id=&#34;选择排序原理&#34;&gt;选择排序原理&lt;/h3&gt;
+&lt;p&gt;选择排序思想就是遍历找出最小值或者最大值后维护有序序列，从第一个元素开始依次往后找到最小或者最大元素，然后与第一个元素交换，
+然后从第二个元素开始依次往复直到倒数第二个元素找出最小数，时间复杂度O(n^2)。&lt;img src=&#34;https://olef5l6y5.qnssl.com/select_sort.gif&#34; alt=&#34;&#34;&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>公司Rest架构启动过程分析</title>
+      <link>https://sjis.me/post/2016-10-14-rest_framework_analyse/</link>
+      <pubDate>Fri, 14 Oct 2016 00:00:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2016-10-14-rest_framework_analyse/</guid>
+      <description>&lt;h4 id=&#34;什么是rest&#34;&gt;什么是REST&lt;/h4&gt;
+&lt;p&gt;具象状态传输（英文：Representational State Transfer，简称REST），是Roy Thomas Fielding博士与2000年在他的博士论文 &amp;ldquo;Architectural Styles and the Design of Network-based Software Architectures&amp;rdquo; 中提出来的一种万维网软件架构风格。&lt;/p&gt;
+&lt;p&gt;REST相对于传统的SOAP到底有哪些不同，或者说两者分别更适合运用于什么样的场景。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Spring Boot配置定时任务以及注册启动类</title>
+      <link>https://sjis.me/post/2016-08-1-springboot_scheduling/</link>
+      <pubDate>Sun, 14 Aug 2016 00:00:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2016-08-1-springboot_scheduling/</guid>
+      <description>&lt;h4 id=&#34;配置spring-boot定时任务&#34;&gt;配置Spring Boot定时任务&lt;/h4&gt;
+&lt;p&gt;在Spring Boot启动方法上加上&lt;code&gt;@EnableScheduling&lt;/code&gt;开启定时任务&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>使用Spring事务时遇到的Session问题</title>
+      <link>https://sjis.me/post/2016-08-05-problem_hibernate_session/</link>
+      <pubDate>Fri, 05 Aug 2016 00:00:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2016-08-05-problem_hibernate_session/</guid>
+      <description>&lt;h4 id=&#34;问题&#34;&gt;问题&lt;/h4&gt;
+&lt;p&gt;当开启事务时，我们需要更新一个表对象数据时，可能我们并没有所有的表对象的数据，这时我们需要先查看他的原始数据，然后更新数据到我们重新封装的实例对象中去。这时如果我们直接去save()或者update()这个对象就回报这样的错。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>开启Spring事务机制</title>
+      <link>https://sjis.me/post/2016-08-04-spring_transaction/</link>
+      <pubDate>Thu, 04 Aug 2016 00:00:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2016-08-04-spring_transaction/</guid>
+      <description>&lt;h4 id=&#34;什么是事务&#34;&gt;什么是事务？&lt;/h4&gt;
+&lt;p&gt;在企业级开发过程中，对于与无人员来说一个实际的对数据库的操作可能是多步结合进行的。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>通过账号密码查看Nginx日志</title>
+      <link>https://sjis.me/post/2016-08-01-nginx_logs_account/</link>
+      <pubDate>Mon, 01 Aug 2016 00:00:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2016-08-01-nginx_logs_account/</guid>
+      <description>&lt;h4 id=&#34;修改虚拟主机配置文件&#34;&gt;修改虚拟主机配置文件&lt;/h4&gt;
+&lt;p&gt;在server中添加如下代码&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$ vim /usr/local/nginx/nginx.conf
+
+server{
+
+   location /logs {
+
+      alias /usr/local/nginx/logs;
+      autoindex on;
+
+      autoindex_exact_size off;
+
+      autoindex_localtime on;
+      add_header Cache-Control no-store;
+
+      auth_basic &amp;#34;Restricted&amp;#34;;
+      auth_basic_user_file /usr/local/nginx/conf/loguser;
+   }
+}
+&lt;/code&gt;&lt;/pre&gt;</description>
+    </item>
+    
+    <item>
+      <title>nginx lua环境搭建</title>
+      <link>https://sjis.me/post/2016-07-31-nginx_lua/</link>
+      <pubDate>Sun, 31 Jul 2016 00:00:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2016-07-31-nginx_lua/</guid>
+      <description>&lt;h4 id=&#34;安装nginx及搭建本地测试环境&#34;&gt;安装nginx及搭建本地测试环境&lt;/h4&gt;
+&lt;p&gt;下载最新版的nginx&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;$ &lt;span class=&#34;nb&#34;&gt;cd&lt;/span&gt; /usr/local/src 
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;$ wget http://nginx.org/download/nginx-1.11.3.tar.gz
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;$ tar -zxvf nginx-1.11.3.tar.gz
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+    </item>
+    
+    <item>
+      <title>Hexo新建Markdown自动打开编辑器</title>
+      <link>https://sjis.me/post/2016-07-2-open_markdown_pad/</link>
+      <pubDate>Thu, 28 Jul 2016 00:00:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2016-07-2-open_markdown_pad/</guid>
+      <description>&lt;h4 id=&#34;添加js脚本&#34;&gt;添加js脚本&lt;/h4&gt;
+&lt;p&gt;在站点目录下新建一个js，内容如下：&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;var exec = require(&amp;#39;child_process&amp;#39;).exec;
+
+hexo.on(&amp;#39;new&amp;#39;, function(data){
+  exec(&amp;#39;start  &amp;#34;D:\dev\editor\MarkdownPad2\MarkdownPad2.exe&amp;#34; &amp;#39; + data.path);
+});
+&lt;/code&gt;&lt;/pre&gt;</description>
+    </item>
+    
+    <item>
+      <title>vps安装ocserv</title>
+      <link>https://sjis.me/post/2016-07-28-install_ocserv/</link>
+      <pubDate>Thu, 28 Jul 2016 00:00:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2016-07-28-install_ocserv/</guid>
+      <description>&lt;h4 id=&#34;一安装必要组件&#34;&gt;一、安装必要组件&lt;/h4&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$ yum install epel-release
+$ yum install ocserv
+&lt;/code&gt;&lt;/pre&gt;</description>
+    </item>
+    
+    <item>
+      <title>替换Hexo代码段样式为google code prettify</title>
+      <link>https://sjis.me/post/2016-07-28-google_code_prettify/</link>
+      <pubDate>Thu, 28 Jul 2016 00:00:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2016-07-28-google_code_prettify/</guid>
+      <description>&lt;h4 id=&#34;下载google-code-prettify&#34;&gt;下载google code prettify&lt;/h4&gt;
+&lt;p&gt;node下载：&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;npm install google-code-prettify --save
+&lt;/code&gt;&lt;/pre&gt;</description>
+    </item>
+    
+    <item>
+      <title>编译Nginx</title>
+      <link>https://sjis.me/post/2016-07-28-nginx/</link>
+      <pubDate>Thu, 28 Jul 2016 00:00:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2016-07-28-nginx/</guid>
+      <description>&lt;p&gt;###安装gcc g++环境(vps已有编译环境可以省略)&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;安装make环境：yum -y install automake autoconf libtool libtool-ltdl  libtool-ltdl-devel make&lt;br&gt;
+安装gcc g++：yum -y install gcc gcc-c++&lt;/p&gt;
+&lt;/blockquote&gt;</description>
+    </item>
+    
+    <item>
+      <title>Hexo配置Git一键部署</title>
+      <link>https://sjis.me/post/2016-07-25-deploy_hexo/</link>
+      <pubDate>Mon, 25 Jul 2016 00:00:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2016-07-25-deploy_hexo/</guid>
+      <description>&lt;h4 id=&#34;走过的坑&#34;&gt;走过的坑&lt;/h4&gt;
+&lt;p&gt;本以为在自己服务器上装一个Git服务，然后Hexo直接配置一下就好了很简单的事，可是实践证明并不是那么简单，虽然走了一点弯路但是最后还是全部配置好了。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Nginx配置ssl模块</title>
+      <link>https://sjis.me/post/2016-07-24-ssl_nginx/</link>
+      <pubDate>Sun, 24 Jul 2016 00:00:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2016-07-24-ssl_nginx/</guid>
+      <description>&lt;h4 id=&#34;什么是https&#34;&gt;什么是HTTPS？&lt;/h4&gt;
+&lt;p&gt;根据维基百科的解释：&lt;/p&gt;
+&lt;p&gt;超文本传输安全协议（缩写：HTTPS，英语：Hypertext Transfer Protocol Secure）是超文本传输协议和SSL/TLS的组合，用以提供加密通讯及对网络服务器身份的鉴定。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>安装和配置Hexo</title>
+      <link>https://sjis.me/post/2016-07-24-start_hexo/</link>
+      <pubDate>Sun, 24 Jul 2016 00:00:00 +0800</pubDate>
+      
+      <guid>https://sjis.me/post/2016-07-24-start_hexo/</guid>
+      <description>&lt;h4 id=&#34;hexo&#34;&gt;Hexo&lt;/h4&gt;
+&lt;p&gt;Hexo 是一个快速、简洁且高效的博客框架。Hexo 使用 Markdown（或其他渲染引擎）解析文章，在几秒内，即可利用靓丽的主题生成静态网页。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <script type="application/javascript" src='https://sjis.me/js/theme-mode.js'></script>
+    <link rel="stylesheet" href='https://sjis.me/css/frameworks.min.css' />
+    <link rel="stylesheet" href='https://sjis.me/css/github.min.css' />
+    <link rel="stylesheet" href='https://sjis.me/css/github-style.css' />
+    <link rel="stylesheet" href='https://sjis.me/css/light.css' />
+    <link rel="stylesheet" href='https://sjis.me/css/dark.css' />
+    <link rel="stylesheet" href='https://sjis.me/css/syntax.css' />
+    <title>Go项目实战总结 - SunJun&#39;s blog</title>
+    
+    <link rel="icon" type="image/x-icon" href='/images/github.png'>
+    
+    <meta name="theme-color" content="#1e2327">
+
+    
+    <meta name="description"
+  content="GOPATH go get、go install等命令都会用到gopath，gopath告诉go命令和和其他相关工具到哪找安装在你系统上的go包。
+" />
+<meta name="keywords"
+  content='blog, google analytics' />
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="https://sjis.me/post/2017-09-25-start_golang/" />
+
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Go项目实战总结 - SunJun&#39;s blog" />
+<meta name="twitter:description"
+  content="GOPATH go get、go install等命令都会用到gopath，gopath告诉go命令和和其他相关工具到哪找安装在你系统上的go包。
+" />
+<meta name="twitter:site" content="https://sjis.me/" />
+<meta name="twitter:creator" content="" />
+<meta name="twitter:image"
+  content="https://sjis.me/">
+
+
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Go项目实战总结 - SunJun&#39;s blog">
+<meta property="og:description"
+  content="GOPATH go get、go install等命令都会用到gopath，gopath告诉go命令和和其他相关工具到哪找安装在你系统上的go包。
+" />
+<meta property="og:url" content="https://sjis.me/post/2017-09-25-start_golang/" />
+<meta property="og:site_name" content="Go项目实战总结" />
+<meta property="og:image"
+  content="https://sjis.me/">
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+<meta property="article:published_time" content="2017-09-25 00:00:00 &#43;0800 CST" />
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body>
+  <div style="position: relative">
+  <header class="Header js-details-container Details px-3 px-md-4 px-lg-5 flex-wrap flex-md-nowrap open Details--on">
+    <div class="Header-item mobile-none" style="margin-top: -4px; margin-bottom: -4px;">
+      <a class="Header-link" href="https://sjis.me/">
+        <svg class="octicon" height="32" viewBox="0 0 16 16" version="1.1" width="32">
+          <path fill-rule="evenodd"
+            d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z">
+          </path>
+        </svg>
+      </a>
+    </div>
+    <div class="Header-item d-md-none">
+      <button class="Header-link btn-link js-details-target" type="button"
+        onclick="document.querySelector('#header-search').style.display = document.querySelector('#header-search').style.display == 'none'? 'block': 'none'">
+        <svg height="24" class="octicon octicon-three-bars" viewBox="0 0 16 16" version="1.1" width="24">
+          <path fill-rule="evenodd"
+            d="M1 2.75A.75.75 0 011.75 2h12.5a.75.75 0 110 1.5H1.75A.75.75 0 011 2.75zm0 5A.75.75 0 011.75 7h12.5a.75.75 0 110 1.5H1.75A.75.75 0 011 7.75zM1.75 12a.75.75 0 100 1.5h12.5a.75.75 0 100-1.5H1.75z">
+          </path>
+        </svg>
+      </button>
+    </div>
+    <div style="display: none;" id="header-search"
+      class="Header-item Header-item--full flex-column flex-md-row width-full flex-order-2 flex-md-order-none mr-0 mr-md-3 mt-3 mt-md-0 Details-content--hidden-not-important d-md-flex">
+      <div
+        class="Header-search header-search flex-auto js-site-search position-relative flex-self-stretch flex-md-self-auto mb-3 mb-md-0 mr-0 mr-md-3 scoped-search site-scoped-search js-jump-to">
+        <div class="position-relative">
+          <form target="_blank" action="https://www.google.com/search" accept-charset="UTF-8" method="get"
+            autocomplete="off">
+            <label
+              class="Header-search-label form-control input-sm header-search-wrapper p-0 js-chromeless-input-container header-search-wrapper-jump-to position-relative d-flex flex-justify-between flex-items-center">
+              <input type="text"
+                class="Header-search-input form-control input-sm header-search-input jump-to-field js-jump-to-field js-site-search-focus js-site-search-field is-clearable"
+                name="q" value="" placeholder="Search" autocomplete="off">
+              <input type="hidden" name="q" value="site:https://sjis.me/">
+            </label>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="Header-item Header-item--full flex-justify-center d-md-none position-relative">
+      <a class="Header-link " href="https://sjis.me/">
+        <svg class="octicon octicon-mark-github v-align-middle" height="32" viewBox="0 0 16 16" version="1.1"
+          width="32">
+          <path fill-rule="evenodd"
+            d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z">
+          </path>
+        </svg>
+      </a>
+    </div>
+    <div class="Header-item" style="margin-right: 0;">
+      <a href="javascript:void(0)" class="Header-link no-select" onclick="switchTheme()">
+        <svg style="fill: var(--color-profile-color-modes-toggle-moon);" class="no-select" viewBox="0 0 16 16"
+          version="1.1" width="16" height="16">
+          <path fill-rule="evenodd" clip-rule="evenodd"
+            d="M4.52208 7.71754C7.5782 7.71754 10.0557 5.24006 10.0557 2.18394C10.0557 1.93498 10.0392 1.68986 10.0074 1.44961C9.95801 1.07727 10.3495 0.771159 10.6474 0.99992C12.1153 2.12716 13.0615 3.89999 13.0615 5.89383C13.0615 9.29958 10.3006 12.0605 6.89485 12.0605C3.95334 12.0605 1.49286 10.001 0.876728 7.24527C0.794841 6.87902 1.23668 6.65289 1.55321 6.85451C2.41106 7.40095 3.4296 7.71754 4.52208 7.71754Z">
+          </path>
+        </svg>
+      </a>
+    </div>
+  </header>
+</div>
+  
+<div>
+  <main>
+    <div class="gisthead pagehead bg-gray-light pb-0 pt-3 mb-4">
+      <div class="px-0">
+        <div class="mb-3 d-flex px-3 px-md-3 px-lg-5">
+          <div class="flex-auto min-width-0 width-fit mr-3">
+            <div class="d-flex">
+              <div class="d-none d-md-block">
+                <a class="avatar mr-2 flex-shrink-0" href="https://sjis.me/">
+                  <img class=" avatar-user"
+                    src="https://sjis.me/images/avatar.png"
+                    width="32" height="32"></a>
+              </div>
+              <div class="d-flex flex-column">
+                <h1 class="break-word f3 text-normal mb-md-0 mb-1">
+                  <span class="author">
+                    <a href="https://sjis.me/">SunJun</a></span><span
+                    class="path-divider">/</span><strong class="css-truncate-target mr-1" style="max-width: 410px"><a
+                      href="https://sjis.me/post/2017-09-25-start_golang/">Go项目实战总结</a></strong>
+                </h1>
+                <div class="note m-0">
+                  Created <relative-time datetime="Mon, 25 Sep 2017 00:00:00 &#43;0800"
+                    class="no-wrap">
+                    Mon, 25 Sep 2017 00:00:00 &#43;0800</relative-time>
+
+                  
+                  <span class="file-info-divider"></span>
+                  Modified <relative-time datetime="Tue, 27 Sep 2022 13:46:48 &#43;0800"
+                    class="no-wrap">
+                    Tue, 27 Sep 2022 13:46:48 &#43;0800</relative-time>
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-lg px-3 new-discussion-timeline">
+      <div class="repository-content gist-content">
+        <div>
+          <div class="js-gist-file-update-container js-task-list-container file-box">
+            <div id="file-pytest" class="file my-2">
+              <div id="post-header" class="file-header d-flex flex-md-items-center flex-items-start sticky-header" style="z-index: 2">
+                <div class="file-info d-flex flex-md-items-center flex-items-start flex-order-1 flex-auto">
+                  <div class="text-mono f6 flex-auto pr-3 flex-order-2 flex-md-order-1 mt-2 mt-md-0">
+                    
+                    <summary id="toc-toggle" onclick="clickToc()" class="btn btn-octicon m-0 mr-2 p-2">
+                      <svg aria-hidden="true" viewBox="0 0 16 16" height="16" width="16" class="octicon octicon-list-unordered">
+                        <path fill-rule="evenodd" d="M2 4a1 1 0 100-2 1 1 0 000 2zm3.75-1.5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zm0 5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zm0 5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zM3 8a1 1 0 11-2 0 1 1 0 012 0zm-1 6a1 1 0 100-2 1 1 0 000 2z"></path>
+                      </svg>
+                    </summary>
+                    <details-menu class="SelectMenu" id="toc-details" style="display: none;">
+                      <div class="SelectMenu-modal rounded-3 mt-1" style="max-height: 340px;">
+                        <div class="SelectMenu-list SelectMenu-list--borderless p-2" style="overscroll-behavior: contain;" id="toc-list">
+                        </div>
+                      </div>
+                    </details-menu>
+                      3524 Words
+                    
+
+                  </div>
+                  <div class="file-actions flex-order-2 pt-0">
+                    
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="Box-body px-5 pb-5" style="z-index: 1">
+                <article class="markdown-body entry-content container-lg"><h3 id="gopath">GOPATH</h3>
+<p>go get、go install等命令都会用到gopath，gopath告诉go命令和和其他相关工具到哪找安装在你系统上的go包。</p>
+<p>windows设置gopath</p>
+<pre tabindex="0"><code>set GOPATH=c:/Users/user/go;d:/workspace/mygo
+</code></pre><p>linux设置gopath</p>
+<pre tabindex="0"><code>export GOPATH=/home/user/go:/usr/local/mygo
+</code></pre><p>gopath也是工作目录，用户源码文件放在gopath/src下,go install 生成的可执行文件在gopath/bin下，go install产生的
+中间文件.a文件在gopath/pkg下，go install编译器会判断源码是否有改动，如果没有改动就不会重新生成.a文件，可以加快编译速度。</p>
+<h3 id="vendor">vendor</h3>
+<p>golang版本依赖是个很头疼的问题，如果我们的项目依赖某一个特定的版本，或者第三方库不满足我们需要但是又很难让作者做出改动的时候，
+依赖问题都是个痛点。通过go get 获取的依赖在不同的电脑上可能出现编译不通过的情况。<br>
+go1.5后提供了GO15VENDOREXPERIMENT环境变量，用于将go build、go install时的搜索路径修改为<code>当前目录/vendor</code>下，
+通过依赖项目vendor目录可以依赖一些特定版本的第三方依赖，或者是自己做出修改的依赖包但是又不属于项目本身业务代码，就可以放在
+vendor目录下。</p>
+<h3 id="bindata的使用">bindata的使用</h3>
+<p>我们的项目中可能带有前端页面，虽然是可以前后端分离，但是前端页面比较简单就没有必要单独分出来。如果前端代码也能直接编译到go的可执行
+程序中那不是一件很爽的事么，这就用到了go-bindata，他会把静态文件生成为.go文件。<a href="https://github.com/jteeuwen/go-bindata">go-bindata</a>
+<a href="https://github.com/elazarl/go-bindata-assetfs">go-bindata-assetfs</a><br>
+go-bindata与go-bindata-assetfs的区别:</p>
+<ul>
+<li>go-bindata仅仅用于生成bindata文件提供基本的方法</li>
+<li>go-bindata-assetfs依赖go-bindata并提供方法让我们能够很轻松的向外提供FileServer</li>
+</ul>
+<p>在项目中我们如何使用呢：</p>
+<pre tabindex="0"><code>go-bindata -pkg=asserts -o src/isesol.com/agentServer/asserts/bindata.go asserts/...
+</code></pre><ul>
+<li>pkg:指定生成的.go文件的package名</li>
+<li>o:指定生成的.go文件的路径已经名称</li>
+<li>asserts/&hellip;:asserts静态文件目录,&hellip;循环迭代asserts目录下的所有文件</li>
+</ul>
+<p>自己的代码中</p>
+<pre tabindex="0"><code>var fsh http.Handler
+if config.AgentConfig.LocalTest {
+	fsh = http.FileServer(http.Dir(&#34;asserts&#34;))
+} else {
+	fsh = http.FileServer(&amp;assetfs.AssetFS{Asset: asserts.Asset, AssetDir: asserts.AssetDir, Prefix: &#34;asserts&#34;})
+}
+r.PathPrefix(&#34;/&#34;).Handler(fsh)
+</code></pre><p>我们可以通过配置项指定使用本地静态文件还是生成的bindata文件，需要注意的是其中: <code>Prefix: &quot;asserts&quot;</code>asserts一定要与静态文件目录同名。</p>
+<h3 id="xorm的使用">xorm的使用</h3>
+<p>xorm是一个数据库框架，我们的项目使用sqlite数据库，但是有个很恶心的地方就是sqlite3的驱动部分代码确是c，这导致windows上编译不了其他平台的代码。
+毕竟数据库发展这么多年，以前的数据库都是c写的，想要把几M的c代码全部替换成go确实也不是一件容易的事。<br>
+xorm使用过程中的坑：</p>
+<ul>
+<li>数据库主键自增:数据库设置了主键自增，我们insert的时候不设置主键值默认是0，struct中id字段tag必须加上autoincr</li>
+<li>多表联合查询时:如果不同struct中有相同的字段</li>
+</ul>
+<pre tabindex="0"><code>struct A {
+ ID int64 `xorm:&#34;id&#34; json:&#34;id&#34;`
+ Name string `xorm:&#34;name&#34; json:&#34;name&#34;`
+}
+struct B {
+ ID id int64 `json:&#34;id&#34;`
+}
+struct C {
+ A
+ B
+}
+var c C
+xorm.Find(&amp;c)
+</code></pre><p>A、B中都有id字段并且json的tag都是id，查询出来的结果会发现没有id字段，如果前端需要使用id字段那就会有问题,解决办法是在struct C中添加ID字段就可以了。</p>
+<ul>
+<li>表名与struct名不一致，查询时一定要指定表名</li>
+<li>分页操作需要count获取总条数，有时候我们查询时可能需要指定哪些字段，Select()语句不要放在Count()之前，否则生成的sql会变成select Select()中的字段
+而不是select count(*)</li>
+<li>复杂的查询使用sql语句</li>
+<li>xorm查询时不要new一个变量，应为查询时xorm会new一个，相当于申请了两次内存，会造成内存内存浪费。</li>
+</ul>
+<h3 id="go中cgi接口的设计">go中cgi接口的设计</h3>
+<p>go中实现一个web服务非常的容易:</p>
+<pre tabindex="0"><code>http.HandlerFunc(&#34;/test&#34;,func(w http.ResponseWriter, r *http.Request){
+
+})
+http.HandlerFunc(&#34;/cgi&#34;,func(w http.ResponseWriter, r *http.Request){
+
+})
+http.ListenAndServe(&#34;:8080&#34;, nil)
+</code></pre><p>几行代码就可以实现一个http服务器，test、cgi就是对应的处理函数用于处理请求。但是如果我们想设计一个统一的cgi接口作为请求的唯的一入口而不是添加一个又一个HandlerFunc，
+该怎么做呢，首先为什么要设计一个post请求的cgi接口，以及他的好处：</p>
+<ul>
+<li>用户不能通过url探测接口功能</li>
+<li>参数不会显式的传递，一定程度上保证了接口安全性</li>
+<li>即使接口被探测到，修改接口也非常方便，只需要修改body内容而不需要url地址<br>
+实现：<br>
+我们可以使用cgi作为统一的入口，直接上代码：</li>
+</ul>
+<pre tabindex="0"><code>func cgi(w http.ResponseWriter, r *http.Request) {
+    if r.Body == nil {
+    	util.JSON(w, map[string]string{&#34;errorCode&#34;: &#34;-1&#34;, &#34;errorInfo&#34;: &#34;systemError&#34;})
+    	return
+    }
+    defer r.Body.Close()
+    
+    var req map[string]interface{}
+    err = jsoniter.NewDecoder(r.Body).Decode(&amp;req)
+    if err != nil {
+    	util.JSON(w, map[string]string{&#34;errorCode&#34;: &#34;-1&#34;, &#34;errorInfo&#34;: &#34;systemError&#34;})
+    	return
+    }
+    cmd := strings.TrimPrefix(req[&#34;cmd&#34;].(string), constant.ServiceName)
+    if fn, ok := util.Cgi.Get(cmd); ok {
+    	res = fn(req)
+    } else {
+    	util.JSON(w, model.RestError{ErrorCode: &#34;-1&#34;, ErrorInfo: &#34;cmd not found&#34;})
+    	return
+    }
+    
+    switch res.(type) {
+    case error:
+    	util.JSON(w, model.RestError{ErrorCode: &#34;-1&#34;, ErrorInfo: res.(error).Error()})
+    case model.RestError:
+    	util.JSON(w, res)
+    default:
+    	util.JSON(w, map[string]interface{}{&#34;cmd&#34;: constant.ServiceName + cmd, &#34;response&#34;: res})
+    }
+}
+</code></pre><p>将request body中内容解析出来，cmd指向对应处理函数，我们通过一个map[string]interface,其中key是cmd的值value是
+接口类型。service包中通过</p>
+<pre tabindex="0"><code>func init() {
+    util.Cgi.Register(&#34;test/test&#34;, service)
+}
+func service(req interface{}) (interface{}) {
+    //业务代码
+}
+</code></pre><p>来实现处理方法的注册，这里用到的其实是接口值。</p>
+<p>结果通过res返回，这里一个很重要的地方就是接口的类型判断，通过switch res.(type)判断返回类型是系统异常、业务异常、正常返回
+中的哪种。这样一个简单的cgi接口就完成了。</p>
+<h3 id="如何统一返回格式化时间">如何统一返回格式化时间</h3>
+<pre tabindex="0"><code>package model
+
+// JSONTime JSONTime
+type JSONTime time.Time
+
+// MarshalJSON MarshalJSON
+func (t JSONTime) MarshalJSON() ([]byte, error) {
+	stamp := fmt.Sprintf(&#34;\&#34;%s\&#34;&#34;, time.Time(t).Format(&#34;2006-01-02 15:04:05&#34;))
+	return []byte(stamp), nil
+}
+
+//model
+type Subscription struct {
+	ID          int64          `xorm:&#34;id pk autoincr&#34; json:&#34;id&#34;`
+	MachineID   string         `xorm:&#34;machine_id&#34; json:&#34;machineId&#34;`
+	MsgID       int64          `xorm:&#34;msg_id&#34; json:&#34;msgId&#34;`
+	MessageID   string         `xorm:&#34;message_id&#34; json:&#34;messageId&#34;`
+	UsingStatus string         `json:&#34;usingStatus&#34;`
+	MachineType string         `json:&#34;machineType&#34;`
+	Status      string         `json:&#34;status&#34;`
+	RuleName    string         `json:&#34;ruleName&#34;`
+	GmtCreate   model.JSONTime `xorm:&#34;created&#34; json:&#34;-&#34;`
+	GmtModify   model.JSONTime `xorm:&#34;created updated&#34; json:&#34;-&#34;`
+}
+json.Marshal(sub)
+</code></pre><p>当我们调json.Marshal时，其实就是调了这里我们这里我们自己实现的MarshalJSON方法，我们一层一层进去会发现。</p>
+<pre tabindex="0"><code>// Marshaler is the interface implemented by types that
+// can marshal themselves into valid JSON.
+type Marshaler interface {
+	MarshalJSON() ([]byte, error)
+}
+var (
+	marshalerType     = reflect.TypeOf(new(Marshaler)).Elem()
+	textMarshalerType = reflect.TypeOf(new(encoding.TextMarshaler)).Elem()
+)
+// newTypeEncoder constructs an encoderFunc for a type.
+// The returned encoder only checks CanAddr when allowAddr is true.
+func newTypeEncoder(t reflect.Type, allowAddr bool) encoderFunc {
+	if t.Implements(marshalerType) {
+    		return marshalerEncoder
+    	}
+    	if t.Kind() != reflect.Ptr &amp;&amp; allowAddr {
+    		if reflect.PtrTo(t).Implements(marshalerType) {
+    			return newCondAddrEncoder(addrMarshalerEncoder, newTypeEncoder(t, false))
+    		}
+    	}
+    
+    	if t.Implements(textMarshalerType) {
+    		return textMarshalerEncoder
+    	}
+    	if t.Kind() != reflect.Ptr &amp;&amp; allowAddr {
+    		if reflect.PtrTo(t).Implements(textMarshalerType) {
+    			return newCondAddrEncoder(addrTextMarshalerEncoder, newTypeEncoder(t, false))
+    		}
+    	}
+    
+    	switch t.Kind() {
+    	case reflect.Bool:
+    		return boolEncoder
+    	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+    		return intEncoder
+    	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Uintptr:
+    		return uintEncoder
+    	case reflect.Float32:
+    		return float32Encoder
+    	case reflect.Float64:
+    		return float64Encoder
+    	case reflect.String:
+    		return stringEncoder
+    	case reflect.Interface:
+    		return interfaceEncoder
+    	case reflect.Struct:
+    		return newStructEncoder(t)
+    	case reflect.Map:
+    		return newMapEncoder(t)
+    	case reflect.Slice:
+    		return newSliceEncoder(t)
+    	case reflect.Array:
+    		return newArrayEncoder(t)
+    	case reflect.Ptr:
+    		return newPtrEncoder(t)
+    	default:
+    		return unsupportedTypeEncoder
+    	}
+}
+</code></pre><p>这里会判断我们是不是实现了Marshaler接口，如果实现了就返回这个encoderFunc，否则t.Kind()判断是哪种类型返回对应的Encoder。</p>
+<h3 id="mapstructure使用">mapstructure使用</h3>
+<p><a href="https://github.com/mitchellh/mapstructure">mapstructure</a></p>
+<pre tabindex="0"><code>m.(map[string]interface{})[&#34;parameters&#34;]
+</code></pre><p>parameters参数与struct映射存在一个问题就是，后台struct使用string字段去接收时，前端传一个int型的值，会发生类型转换错误，一起开始
+没有发现解决方法。<br>
+后来发现mapstructure有一个配置项</p>
+<pre tabindex="0"><code>mapstructure.DecoderConfig.WeaklyTypedInput
+</code></pre><p>默认是false，设置成true工具内部就会帮我们进行类型转换，前端传来的int或float类型会自动帮我们转成struct中对应的类型。</p>
+<p>爽了！不用再去修改前端代码了！^_^</p>
+<h3 id="negroni中间件">negroni中间件</h3>
+<p>Negroni 不是一个框架，它是为了方便使用 net/http 而设计的一个库而已。<br>
+可以用 Use 函数把这些 http.Handler 处理器引进到处理器链上来：</p>
+<pre tabindex="0"><code>mux := http.NewServeMux()
+
+n := negroni.New()
+n.Use(negroni.HandlerFunc(Test1))
+n.Use(negroni.HandlerFunc(Test2))
+
+n.UseHandler(mux)
+
+n.Run(&#34;:8080&#34;)
+</code></pre><p>这个功能非常的好用，如果我们要在所有的处理函数之前添加一个权限校验或者其他的全局处理的handler，name这个功能是一个很好的选择。</p>
+<h3 id="内嵌ngrok与源码修改">内嵌ngrok与源码修改</h3>
+<p>基于ngrok 1.7</p>
+<ul>
+<li>添加/api/tunnels接口，显示本地暴露端口
+client/views/web/http.go: register方法添加</li>
+</ul>
+<pre tabindex="0"><code>http.HandleFunc(&#34;/api/tunnels&#34;, func(w http.ResponseWriter, r *http.Request) {
+    payloadData := whv.ctl.State().GetTunnels()
+	payload, err := json.Marshal(payloadData)
+	if err != nil {
+		panic(err)
+	}
+
+	w.Header().Set(&#34;Content-Type&#34;, &#34;application/json&#34;)
+	w.Write(payload)
+})
+</code></pre><ul>
+<li>去除ngrok启动页面</li>
+</ul>
+<pre tabindex="0"><code>166 //var termView *term.TermView
+167 //if config.LogTo != &#34;stdout&#34; {
+168 //  termView = term.NewTermView(ctl)
+169 //  ctl.AddView(termView)
+170 //}
+
+175 //if termView != nil {
+176 //	ctl.AddView(termView.NewHttpView(p))
+177 //}
+</code></pre><ul>
+<li>修改启动配置项
+client/main.go: 部分代码注释</li>
+</ul>
+<pre tabindex="0"><code>//func init() {
+//	if runtime.GOOS == &#34;windows&#34; {
+//		if mousetrap.StartedByExplorer() {
+//			fmt.Println(&#34;Don&#39;t double-click ngrok!&#34;)
+//			fmt.Println(&#34;You need to open cmd.exe and run it from the command line!&#34;)
+//			time.Sleep(5 * time.Second)
+//			os.Exit(1)
+//		}
+//	}
+//}
+</code></pre><ul>
+<li>client/cli.go: ParseArgs方法代码修改为</li>
+</ul>
+<pre tabindex="0"><code>opts = &amp;Options{}
+	configS := strings.Fields(config.AgentConfig.NgrokArgs)
+	confMap := make(map[string]string, 0)
+	commandSlice := make([]string, 0)
+	for _, v := range configS {
+
+		if strings.HasPrefix(v, &#34;-&#34;) {
+
+			v = strings.TrimPrefix(v, &#34;-&#34;)
+			if strings.Contains(v, &#34;=&#34;) {
+				cfgVal := strings.Split(v, &#34;=&#34;)
+				confMap[cfgVal[0]] = cfgVal[1]
+			} else {
+				confMap[v] = &#34;&#34;
+			}
+
+		} else {
+			commandSlice = append(commandSlice, v)
+		}
+	}
+	if v, ok := confMap[&#34;config&#34;]; ok {
+		opts.config = v
+	}
+	if v, ok := confMap[&#34;log&#34;]; ok {
+		opts.logto = v
+	}
+	if v, ok := confMap[&#34;log-level&#34;]; ok {
+		opts.loglevel = v
+	}
+	if v, ok := confMap[&#34;authtoken&#34;]; ok {
+		opts.authtoken = v
+	}
+	if v, ok := confMap[&#34;httpauth&#34;]; ok {
+		opts.httpauth = v
+	}
+	if v, ok := confMap[&#34;subdomain&#34;]; ok {
+		opts.subdomain = v
+	}
+	if v, ok := confMap[&#34;hostname&#34;]; ok {
+		opts.hostname = v
+	}
+
+	opts.command = commandSlice[0]
+
+	switch opts.command {
+	case &#34;list&#34;:
+		opts.args = commandSlice[1:]
+	case &#34;start&#34;:
+		opts.args = commandSlice[1:]
+	case &#34;start-all&#34;:
+		opts.args = commandSlice[1:]
+	case &#34;version&#34;:
+		fmt.Println(version.MajorMinor())
+		os.Exit(0)
+	case &#34;help&#34;:
+		flag.Usage()
+		os.Exit(0)
+	case &#34;&#34;:
+		fmt.Errorf(&#34;Error: Specify a local port to tunnel to, or &#34; +
+			&#34;an ngrok command.\n\nExample: To expose port 80, run &#34; +
+			&#34;&#39;ngrok 80&#39;&#34;)
+		return
+
+	default:
+		if len(commandSlice) &gt; 1 {
+			fmt.Errorf(&#34;You may only specify one port to tunnel to on the command line, got %d: %v&#34;,
+				len(commandSlice),
+				commandSlice)
+			return
+		}
+
+		opts.command = &#34;default&#34;
+		opts.args = commandSlice
+	}
+
+	return
+</code></pre><ul>
+<li>client/config.go：LoadConfiguration代码修改</li>
+</ul>
+<pre tabindex="0"><code>if matched, err = regexp.MatchString(&#34;^[0-9a-zA-Z_\\-!]+$&#34;, content); err != nil {}
+之前代码替换成：
+
+configPath := opts.config
+if configPath == &#34;&#34; {
+	configPath = defaultPath()
+}
+
+log.Info(&#34;Reading configuration file %s&#34;, configPath)
+// deserialize/parse the config
+config = &amp;Configuration{}
+// try to parse the old .ngrok format for backwards compatibility
+matched := false
+var content string
+//config from file
+if opts.config != &#34;&#34; {
+
+	configBuf, err := ioutil.ReadFile(configPath)
+	if err != nil {
+		panic(&#34;Failed to read configuration file &#34; + configPath + &#34;: &#34; + err.Error())
+	}
+	if err = yaml.Unmarshal(configBuf, &amp;config); err != nil {
+		panic(&#34;Error parsing configuration file &#34; + configPath + &#34;: &#34; + err.Error())
+	}
+	content = strings.TrimSpace(string(configBuf))
+
+} else {
+
+	config = &amp;Configuration{
+		ServerAddr:         &#34;tunnel.qydev.com:4443&#34;,
+		TrustHostRootCerts: false,
+		Tunnels: map[string]*TunnelConfiguration{
+			&#34;ssh&#34;: {
+				Protocols: map[string]string{&#34;tcp&#34;: &#34;127.0.0.1:22&#34;},
+			},
+			&#34;web&#34;: {
+				Subdomain: strings.TrimPrefix(agentConf.AgentConfig.BoxName, &#34;LocalBox-&#34;),
+				Protocols: map[string]string{&#34;http&#34;: &#34;80&#34;},
+			},
+		},
+	}
+}
+
+for name, t := range config.Tunnels {
+  //添加
+  if &#34;web&#34; == name {
+  	t.Subdomain = strings.TrimPrefix(agentConf.AgentConfig.BoxName, &#34;LocalBox-&#34;)
+  }
+  for k, addr := range t.Protocols {
+     //添加
+     if &#34;http&#34; == k {
+     	t.HttpAuth = agentConf.AgentConfig.BoxUserName + &#34;:&#34; + agentConf.AgentConfig.BoxPassword
+     }
+  }
+}
+</code></pre><h3 id="代码扫描工具">代码扫描工具</h3>
+<pre tabindex="0"><code>go get github.com/alecthomas/gometalinter 
+gometalinter --install --update
+gometalinter ./... --vendor -e asserts --fast
+</code></pre></article>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<script type="application/javascript" src='https://sjis.me/js/toc.js'></script>
+<link rel="stylesheet" href='https://sjis.me/css/toc.css' />
+
+
+  <div class="footer container-xl width-full p-responsive">
+  <div
+    class="position-relative d-flex flex-row-reverse flex-lg-row flex-wrap flex-lg-nowrap flex-justify-center flex-lg-justify-between flex-sm-items-center pt-6 pb-2 mt-6 f6 text-gray border-top border-gray-light ">
+    <a aria-label="Homepage" title="GitHub" class="footer-octicon d-none d-lg-block mr-lg-4" href="https://sjis.me/">
+      <svg height="24" class="octicon octicon-mark-github" viewBox="0 0 16 16" version="1.1" width="24">
+        <path fill-rule="evenodd"
+          d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z">
+        </path>
+      </svg>
+    </a>
+    <ul class="list-style-none d-flex flex-wrap col-12 flex-justify-center flex-lg-justify-between mb-2 mb-lg-0">
+      
+      <li class="mr-3 mr-lg-0">Theme by <a href='https://github.com/MeiK2333/github-style'>github-style</a></li>
+      
+    </ul>
+  </div>
+  <div class="d-flex flex-justify-center pb-6">
+    <span class="f6 text-gray-light"></span>
+  </div>
+
+
+</div>
+</body>
+
+<script type="application/javascript" src="https://sjis.me/js/github-style.js"></script>
+
+
+
+
+</html>
